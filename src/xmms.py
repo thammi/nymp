@@ -6,14 +6,13 @@ from os.path import join
 _ID = 'INSERT_NAME_HERE'
 
 def get_config_dir():
-    return join(osuserconfdir_get(), "clients", _ID)
+    return join(userconfdir_get(), "clients", _ID)
 
 class XmmsConnection:
 
     def __init__(self):
         self.connected = False
-
-        xmms = self.xmms = XMMS(_ID)
+        self.xmms = None
 
         self.connect()
 
@@ -23,12 +22,15 @@ class XmmsConnection:
                 self.connected = False
 
             try:
-                xmms = self.xmms
+                xmms = self.xmms = XMMS(_ID)
 
                 # TODO: use path conventions
                 xmms.connect(disconnect_func=disconnected)
                 GLibConnector(xmms)
+
+                xmms.broadcast_playback_status(p)
             except IOError:
+                self.xmms = None
                 self.connected = False
             else:
                 self.connected = True
