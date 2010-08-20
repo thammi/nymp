@@ -8,10 +8,12 @@ from events import EventEmitter
 _ID = 'INSERT_NAME_HERE'
 
 def get_config_dir():
+    """Get configuration directory according to XMMS2 guideline"""
     return join(userconfdir_get(), "clients", _ID)
 
 
 class XmmsConnection(EventEmitter):
+    """Represantation of a XMMS connection. Use the modules (player)."""
 
     CONNECT_EVENT = "connect"
     DISCONNECT_EVENT = "disconnect"
@@ -32,6 +34,7 @@ class XmmsConnection(EventEmitter):
         self.connect()
 
     def connect(self):
+        """Connect to a XMMS server"""
         if not self.connected:
             # disconnection callback
             def disconnected(r):
@@ -56,6 +59,7 @@ class XmmsConnection(EventEmitter):
 
 
 class Player(EventEmitter):
+    """Player module. Control what is played how."""
 
     STATUS_EVENT = "status_changed"
     VOLUME_EVENT = "volume_changed"
@@ -65,6 +69,11 @@ class Player(EventEmitter):
         EventEmitter.__init__(self)
 
         self.connection = connection
+
+        # create events
+        self.register(self.STATUS_EVENT)
+        self.register(self.VOLUME_EVENT)
+        self.register(self.CURRENT_EVENT)
 
         connection.listen(connection.CONNECT_EVENT, self._connected)
 
