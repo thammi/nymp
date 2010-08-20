@@ -1,4 +1,6 @@
 class NoEventException(Exception):
+    """Exception thrown if the event was not registered.
+    Occurs only in strict mode."""
 
     def __init__(self, event_id, listener):
         self.event_id = event_id
@@ -9,23 +11,27 @@ class NoEventException(Exception):
 
 # TODO: use glib?
 class EventEmitter:
+    """Base class managing and emitting events"""
 
-    def __init__(self, demand_registration=True):
-        self.strict = demand_registration
-        self.listeners = {}
+    def __init__(self, strict=True):
+        """Using strict mode expects all events to be registered"""
+        self._strict = strict
+        self._listeners = {}
 
     def emit(self, event_id, *args):
-        listeners = self.listeners
+        """Emit the event aka call all listeners with the given arguments"""
+        listeners = self._listeners
 
         if event_id in listeners:
             for listener in listeners[event_id]:
                 listener(*args)
 
     def listen(self, event_id, listener):
-        listeners = self.listeners
+        """Add listener to the list of function which are called on the event"""
+        listeners = self._listeners
 
         if event_id not in listeners:
-            if self.strict:
+            if self._strict:
                 raise NoEventException(event_id, listener)
             else:
                 register(event_id)
@@ -33,8 +39,12 @@ class EventEmitter:
         listeners[event_id].append(listener)
 
     def register(self, event_id):
-        listeners = self.listeners
+        """Add the event_id to the list of available events"""
+        listeners = self._listeners
 
         if event_id not in listeners:
             listeners[event_id] = []
+
+    def list_events(self):
+        return self._listeners.keys()
 
