@@ -36,6 +36,7 @@ class XmmsConnection(EventEmitter):
 
         # initialize modules
         self.player = Player(self)
+        self.playlist = Playlist(self)
 
     def connect(self):
         """Connect to a XMMS server"""
@@ -62,8 +63,33 @@ class XmmsConnection(EventEmitter):
         return self.connected
 
 
+# TODO: finish
+class Playlist(EventEmitter):
+    """Everything considering the playlist"""
+
+    CHANGE_EVENT = "playlist_changed"
+
+    def __init__(self, connection):
+        EventEmitter.__init__(self)
+
+        self.connection = connection
+
+        self.register(self.CHANGE_EVENT)
+
+        connection.listen(connection.CONNECT_EVENT, self._connected)
+
+    def _connected(self):
+        xmms = self.connection.xmms
+
+        # set callbacks
+        xmms.broadcast_playlist_changed(self._change)
+
+    def _change(self, value):
+        self.emit(self.CHANGE_EVENT, value.value())
+
+
 class Player(EventEmitter):
-    """Player module. Control what is played how."""
+    """Control what is played how"""
 
     STATUS_EVENT = 'status_changed'
     VOLUME_EVENT = 'volume_changed'
