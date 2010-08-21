@@ -1,5 +1,7 @@
+import xmmsclient
 from xmmsclient import XMMS, userconfdir_get
 from xmmsclient.glib import GLibConnector
+
 from os.path import join
 
 from events import EventEmitter
@@ -10,6 +12,10 @@ _ID = 'INSERT_NAME_HERE'
 def get_config_dir():
     """Get configuration directory according to XMMS2 guideline"""
     return join(userconfdir_get(), "clients", _ID)
+
+def reduce_meta(meta):
+    tuples = ((name, value) for (plugin, name), value in meta.items())
+    return dict(tuples)
 
 
 class XmmsConnection(EventEmitter):
@@ -30,8 +36,6 @@ class XmmsConnection(EventEmitter):
 
         # initialize modules
         self.player = Player(self)
-
-        self.connect()
 
     def connect(self):
         """Connect to a XMMS server"""
@@ -61,9 +65,13 @@ class XmmsConnection(EventEmitter):
 class Player(EventEmitter):
     """Player module. Control what is played how."""
 
-    STATUS_EVENT = "status_changed"
-    VOLUME_EVENT = "volume_changed"
-    CURRENT_EVENT = "current_changed"
+    STATUS_EVENT = 'status_changed'
+    VOLUME_EVENT = 'volume_changed'
+    CURRENT_EVENT = 'current_changed'
+
+    STATUS_PLAY = xmmsclient.PLAYBACK_STATUS_PLAY
+    STATUS_PAUSE = xmmsclient.PLAYBACK_STATUS_PAUSE
+    STATUS_STOP = xmmsclient.PLAYBACK_STATUS_PAUSE
 
     def __init__(self, connection):
         EventEmitter.__init__(self)
@@ -98,8 +106,32 @@ class Player(EventEmitter):
         self.emit(self.CURRENT_EVENT, result.value())
 
     def _status_change(self, value):
-        self.emit(self.STATUS_EVENT, value.value())
+        status = self._status = value.value()
+        self.emit(self.STATUS_EVENT, status)
 
     def _volume_change(self, value):
         self.emit(self.VOLUME_EVENT, value.value())
+
+    def toggle(self):
+        if self._status == self.STATUS_PLAY:
+            self.pause()
+        else:
+            self.start()
+
+    def pause(self):
+        self.connection.xmms.playback_pause()
+
+    def start(self):
+        self.connection.xmms.playback_start()
+
+    def stop(self):
+        self.connection.xmms.playback_stop()
+
+    def forward(self):
+        self.connection.xmms.playback_tickle()
+
+    # TODO: last()
+
+    def set_volume(self, volume):
+        self.connection.xmms.volume_set(volume)
 
