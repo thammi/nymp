@@ -20,7 +20,7 @@ class CollectionTree:
         self.childs = None
 
     def request(self):
-        self.xmms.coll_query_infos(self.base, self.steps[0], cb=self._coll_cb).wait()
+        self.xmms.coll_query_infos(self.base, self.steps[0], cb=self._coll_cb)
         self.requested = True
 
     def _build_child(self, item):
@@ -55,14 +55,4 @@ class CollectionTree:
         # turn it into a sorted list
         self.childs = sorted((self._build_child(item) for item in raw),
                 key=_node_cmp_key)
-
-
-def test():
-    global t, x
-    from xmmsclient import XMMS
-    x = XMMS()
-    x.connect()
-    t = CollectionTree(x, [['artist'], ['date', 'album'], ['tracknr', 'title']])
-    t.request()
-    return t
 
