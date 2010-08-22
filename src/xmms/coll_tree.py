@@ -2,7 +2,7 @@ import xmmsclient.collections as coll
 
 def _node_cmp_key(item):
     """Calculate the key used to sort nodes, ignores case"""
-    key = item[0][0]
+    key = item.data[0]
 
     if isinstance(key, basestring):
         return key.lower()
@@ -11,16 +11,24 @@ def _node_cmp_key(item):
 
 class CollectionTree:
 
-    def __init__(self, xmms, steps, base=coll.Universe()):
-        self.xmms = xmms
-        self.base = base
+    def __init__(self, xc, steps, data=None, base=coll.Universe()):
+        self.xc = xc
         self.steps = steps
+        self.data = data
+        self.base = base
+
+        self.is_leaf = len(steps) == 0
 
         self.requested = False
         self.childs = None
 
-    def request(self):
-        self.xmms.coll_query_infos(self.base, self.steps[0], cb=self._coll_cb)
+    def request(self, cb):
+        def acc_cb(value):
+            self._coll_cb(value)
+            cb()
+
+        xmms = self.xc.xmms
+        xmms.coll_query_infos(self.base, self.steps[0], cb=acc_cb)
         self.requested = True
 
     def _build_child(self, item):
@@ -44,10 +52,7 @@ class CollectionTree:
                 sub_coll = coll.Equals(sub_coll, field=attr, value=value)
 
         # actually create the node
-        node = CollectionTree(self.xmms, steps[1:], sub_coll)
-
-        # tuples are stored
-        return (data, node)
+        return CollectionTree(self.xc, steps[1:], data, sub_coll)
 
     def _coll_cb(self, value):
         raw = value.value()
