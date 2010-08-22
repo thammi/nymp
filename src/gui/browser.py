@@ -58,6 +58,14 @@ class CollectionTree(EventEmitter):
 
         self.is_leaf = len(self.steps) == 0
 
+    def add_to_playlist(self):
+        xmms = self.xc.xmms
+
+        # flatten the steps
+        order = sum(self.steps, [])
+
+        xmms.playlist_add_collection(self.collection, order)
+
     def toggle_exp(self):
         if self.expanded:
             self.fold()
@@ -154,7 +162,7 @@ class CollTreeWalker(urwid.ListWalker):
 
         text = "%s%s %s" % (spacer, icon, name)
         # TODO: caching
-        return urwid.AttrMap(SelectableText(text), 'normal', 'focus')
+        return urwid.AttrMap(SelectableText(text, wrap='clip'), 'normal', 'focus')
 
     def focus_node(self):
         focus = self._focus
@@ -230,9 +238,6 @@ class BrowserWidget(urwid.ListBox):
 
         xc.listen(xc.CONNECT_EVENT, self._connect)
 
-        l = [urwid.AttrMap(SelectableText('+ item %i'%i), 'normal', 'focus')
-                for i in range(256)]
-
         steps = [['artist'], ['date', 'album'], ['tracknr', 'title']]
         self.coll_tree = coll_tree = CollectionTree(xc, steps)
         self.walker = walker = CollTreeWalker(coll_tree)
@@ -243,12 +248,15 @@ class BrowserWidget(urwid.ListBox):
         self.coll_tree.request(self.walker.update)
 
     def keypress(self, size, key):
-        if key == 'enter':
-            self.walker.focus_node().toggle_exp()
-        elif key == 'right':
-            self.walker.focus_node().expand()
-        elif key == 'left':
-            self.walker.focus_node().fold()
+        hotkeys = {
+                'enter': self.walker.focus_node().toggle_exp,
+                'right': self.walker.focus_node().expand,
+                'left': self.walker.focus_node().fold,
+                'a': self.walker.focus_node().add_to_playlist,
+                }
+
+        if key in hotkeys:
+            hotkeys[key]()
         else:
             return urwid.ListBox.keypress(self, size, key)
 
