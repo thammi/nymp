@@ -3,8 +3,8 @@ import urwid
 from gui import BaseWidget
 
 palette = [
-        ('focus', 'dark green', 'black'),
-        ('normal', 'default', 'black'),
+        ('focus', 'dark green', 'default'),
+        ('normal', 'default', 'default'),
         ]
 
 frame = BaseWidget()
