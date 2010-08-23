@@ -1,15 +1,13 @@
 import urwid
 
-from xmms import XmmsConnection
-
 from current import CurrentWidget
 from browser import BrowserWidget
 from playlist import Playlist
 
 class BaseWidget(urwid.Frame):
 
-    def __init__(self):
-        xc = self.xc = XmmsConnection()
+    def __init__(self, xc):
+        self.xc = xc
 
         # program status
         f_status = urwid.SolidFill('S')
@@ -27,8 +25,6 @@ class BaseWidget(urwid.Frame):
         self.split = split = urwid.Columns([browser, playlist], focus_column=0)
 
         urwid.Frame.__init__(self, split, current, status)
-
-        xc.connect()
     
     def focus_swap(self):
         split = self.split

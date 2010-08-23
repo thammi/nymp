@@ -12,6 +12,10 @@ class CurrentWidget(urwid.Pile):
         urwid.Pile.__init__(self, [title, album, artist])
 
         player = xc.player
+
+        if xc.connected:
+            player.get_current(self._update)
+
         player.listen(player.CURRENT_EVENT, self._update)
 
     def _update(self, meta):

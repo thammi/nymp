@@ -236,13 +236,15 @@ class BrowserWidget(urwid.ListBox):
     def __init__(self, xc):
         self.xc = xc
 
-        xc.listen(xc.CONNECT_EVENT, self._connect)
-
         steps = [['artist'], ['date', 'album'], ['tracknr', 'title']]
         self.coll_tree = coll_tree = CollectionTree(xc, steps)
         self.walker = walker = CollTreeWalker(coll_tree)
 
         urwid.ListBox.__init__(self, walker)
+
+        if xc.connected:
+            self._connect()
+        xc.listen(xc.CONNECT_EVENT, self._connect)
 
     def _connect(self):
         self.coll_tree.request(self.walker.update)

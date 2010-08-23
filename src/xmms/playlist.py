@@ -11,6 +11,8 @@ class Playlist(EventEmitter):
 
         self.connection = connection
 
+        self.current = None
+
         self.register(self.CHANGE_EVENT)
 
         connection.listen(connection.CONNECT_EVENT, self._connected)
@@ -20,7 +22,11 @@ class Playlist(EventEmitter):
 
         # set callbacks
         xmms.broadcast_playlist_changed(self._change)
+        xmms.broadcast_playlist_loaded(self._loaded)
 
     def _change(self, value):
-        self.emit(self.CHANGE_EVENT, value.value())
+        print value.value()
+
+    def _loaded(self, value):
+        print value.value()
 

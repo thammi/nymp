@@ -1,0 +1,3 @@
+- gui: design (divider, ...)
+- browser shouldn't crash w/o data
+- column focus shouldn't be changed by arrows
