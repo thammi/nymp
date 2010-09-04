@@ -1,5 +1,6 @@
 import urwid
 
+from update import update
 from xmms import reduce_meta
 
 class CurrentWidget(urwid.Pile):
@@ -19,11 +20,18 @@ class CurrentWidget(urwid.Pile):
         player.listen(player.CURRENT_EVENT, self._update)
 
     def _update(self, meta):
-        rm = reduce_meta(meta)
+        if meta:
+            rm = reduce_meta(meta)
+            
+            self.title.set_text("%i. %s" % (rm['tracknr'], rm['title']))
+            self.album.set_text(rm['album'])
+            self.artist.set_text(rm['artist'])
+        else:
+            self.title.set_text("")
+            self.album.set_text("")
+            self.artist.set_text("")
         
-        self.title.set_text("%i. %s" % (rm['tracknr'], rm['title']))
-        self.album.set_text(rm['album'])
-        self.artist.set_text(rm['artist'])
+        update()
 
         # TODO: ugly!
         #from main import loop

@@ -1,6 +1,7 @@
 import urwid
 import xmmsclient.collections as coll
 
+from update import update
 from events import EventEmitter
 from widgets import SelectableText
 
@@ -96,8 +97,6 @@ class CollectionTree(EventEmitter):
             xmms.coll_query_infos(self.collection, self.steps[0], cb=acc_cb)
             self.requested = True
 
-            self._modified()
-
     def _build_child(self, item):
         """Turn a collection item into a node"""
         steps = self.steps
@@ -115,6 +114,8 @@ class CollectionTree(EventEmitter):
         self.childs = sorted((self._build_child(item) for item in raw),
                 key=_node_cmp_key)
 
+        self._modified()
+
     def _modified(self, tree=None):
         if self.parent:
             self.parent._modified()
@@ -131,7 +132,8 @@ class CollTreeWalker(urwid.ListWalker):
         self.tree = tree
         self._focus = [0]
 
-        tree.listen(tree.MODIFY_EVENT, lambda t: self._modified())
+        #tree.listen(tree.MODIFY_EVENT, lambda t: self._modified())
+        tree.listen(tree.MODIFY_EVENT, lambda t: self.update())
 
     def _find_node(self, pos, cur=None):
         if cur == None:
@@ -230,6 +232,7 @@ class CollTreeWalker(urwid.ListWalker):
 
     def update(self):
         self._modified()
+        update()
 
 class BrowserWidget(urwid.ListBox):
 
@@ -247,7 +250,7 @@ class BrowserWidget(urwid.ListBox):
         xc.listen(xc.CONNECT_EVENT, self._connect)
 
     def _connect(self):
-        self.coll_tree.request(self.walker.update)
+        self.coll_tree.request()
 
     def keypress(self, size, key):
         hotkeys = {
