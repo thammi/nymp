@@ -22,14 +22,20 @@ class CurrentWidget(urwid.Pile):
     def _update(self, meta):
         if meta:
             rm = reduce_meta(meta)
-            
-            self.title.set_text("%i. %s" % (rm['tracknr'], rm['title']))
-            self.album.set_text(rm['album'])
-            self.artist.set_text(rm['artist'])
         else:
-            self.title.set_text("")
-            self.album.set_text("")
-            self.artist.set_text("")
+            rm = []
+            
+        if 'title' in rm:
+            title = "%i. %s" % (rm['tracknr'], rm['title']) if 'tracknr' in rm else rm['title']
+        else:
+            title = rm['url'] if 'url' in rm else ""
+
+        album = rm['album'] if 'album' in rm else ""
+        artist = rm['artist'] if 'artist' in rm else ""
+
+        self.title.set_text(title)
+        self.album.set_text(album)
+        self.artist.set_text(artist)
         
         update()
 

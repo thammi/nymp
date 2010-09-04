@@ -25,8 +25,10 @@ class Playlist(EventEmitter):
         xmms.broadcast_playlist_loaded(self._loaded)
 
     def _change(self, value):
-        print value.value()
+        pass
+        #print value.value()
 
     def _loaded(self, value):
-        print value.value()
+        pass
+        #print value.value()
 
