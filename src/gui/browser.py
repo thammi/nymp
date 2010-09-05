@@ -164,7 +164,7 @@ class CollTreeWalker(urwid.ListWalker):
         spacer = " " * ((len(pos) - 1) * 2)
 
         if node.is_leaf:
-            icon = " "
+            icon = ""
         elif node.expanded and node.childs == None:
             icon = "~ "
         elif node.expanded:
@@ -262,7 +262,7 @@ class BrowserWidget(urwid.ListBox):
                 # 3: title
                 {
                     'sort': ['partofset', 'tracknr', 'title', 'id'],
-                    'format': u'{1:0>2}. {2}',
+                    'format': u'{1:>2}. {2}',
                 },
             ]
 
@@ -284,7 +284,7 @@ class BrowserWidget(urwid.ListBox):
                 'right': self.walker.focus_node().expand,
                 'left': self.walker.focus_node().fold,
                 'a': self.walker.focus_node().add_to_playlist,
-                }
+            }
 
         if key in hotkeys:
             hotkeys[key]()
