@@ -181,6 +181,9 @@ class CollTreeWalker(urwid.ListWalker):
 
         return self._find_node(focus)
 
+    def focus_pos(self):
+        return self._focus
+
     def get_focus(self):
         focus = self._focus
 
@@ -279,10 +282,29 @@ class BrowserWidget(urwid.ListBox):
         self.coll_tree.request()
 
     def keypress(self, size, key):
+        def deep_fold():
+            walker = self.walker
+
+            # where are we now?
+            node = walker.focus_node()
+
+            if node.expanded:
+                # we should fold the current node
+                node.fold()
+            else:
+                # let's visit the parent
+                pos = walker.focus_pos()
+
+                if len(pos) > 1:
+                    walker.set_focus(pos[:-1])
+                else:
+                    # TODO: tell the user?
+                    pass
+
         hotkeys = {
                 'enter': self.walker.focus_node().toggle_exp,
                 'right': self.walker.focus_node().expand,
-                'left': self.walker.focus_node().fold,
+                'left': deep_fold,
                 'a': self.walker.focus_node().add_to_playlist,
             }
 
