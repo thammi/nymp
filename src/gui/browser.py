@@ -48,7 +48,7 @@ class CollectionTree(EventEmitter):
         self.register(self.MODIFY_EVENT)
 
         if parent:
-            self.collection = _create_collection(data, parent.steps[0],
+            self.collection = _create_collection(data, parent.steps[0]['sort'],
                     parent.collection)
         else:
             self.collection = coll.Universe()
@@ -63,7 +63,7 @@ class CollectionTree(EventEmitter):
         xmms = self.xc.xmms
 
         # flatten the steps
-        order = sum(self.steps, [])
+        order = sum((step['sort'] for step in self.steps), [])
 
         xmms.playlist_add_collection(self.collection, order)
 
@@ -94,7 +94,7 @@ class CollectionTree(EventEmitter):
                     cb()
 
             xmms = self.xc.xmms
-            xmms.coll_query_infos(self.collection, self.steps[0], cb=acc_cb)
+            xmms.coll_query_infos(self.collection, self.steps[0]['sort'], cb=acc_cb)
             self.requested = True
 
     def _build_child(self, item):
@@ -102,7 +102,7 @@ class CollectionTree(EventEmitter):
         steps = self.steps
 
         # turn the dictionary into a list
-        data = [item[attr] for attr in steps[0]]
+        data = [unicode(item[attr]) for attr in steps[0]['sort']]
 
         # actually create the node
         return CollectionTree(self.xc, steps[1:], data, self)
@@ -124,6 +124,17 @@ class CollectionTree(EventEmitter):
             tree = self
 
         self.emit(self.MODIFY_EVENT, tree)
+
+    def _format_child(self, data):
+        cur_step = self.steps[0]
+
+        if 'format' in cur_step:
+            return cur_step['format'].format(*data)
+        else:
+            return ' - '.join(data)
+
+    def format(self):
+        return self.parent._format_child(self.data)
 
 
 class CollTreeWalker(urwid.ListWalker):
@@ -149,20 +160,18 @@ class CollTreeWalker(urwid.ListWalker):
                 return self._find_node(pos[1:], found)
 
     def _build_widget(self, node, pos):
-        name = u" - ".join((unicode(item) for item in node.data))
-
-        spacer = " " * (len(pos) - 1)
+        spacer = " " * ((len(pos) - 1) * 2)
 
         if node.is_leaf:
-            icon = "*"
+            icon = ""
         elif node.expanded and node.childs == None:
-            icon = "~"
+            icon = "~ "
         elif node.expanded:
-            icon = "-"
+            icon = "- "
         else:
-            icon = "+"
+            icon = "+ "
 
-        text = "%s%s %s" % (spacer, icon, name)
+        text = ''.join((spacer, icon, node.format()))
         # TODO: caching
         return urwid.AttrMap(SelectableText(text, wrap='clip'), 'normal', 'focus')
 
@@ -239,7 +248,22 @@ class BrowserWidget(urwid.ListBox):
     def __init__(self, xc):
         self.xc = xc
 
-        steps = [['artist'], ['date', 'album'], ['tracknr', 'title']]
+        steps = [
+                # 1: artist
+                {
+                    'sort': ['artist'],
+                },
+                # 2: album
+                {
+                    'sort': ['date', 'album'],
+                },
+                # 3: title
+                {
+                    'sort': ['partofset', 'tracknr', 'title', 'id'],
+                    'format': '{1}. {2}',
+                },
+            ]
+
         self.coll_tree = coll_tree = CollectionTree(xc, steps)
         self.walker = walker = CollTreeWalker(coll_tree)
 
