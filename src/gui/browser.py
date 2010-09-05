@@ -134,6 +134,7 @@ class CollectionTree(EventEmitter):
             return ' - '.join(data)
 
     def format(self):
+        # parents know best ...
         return self.parent._format_child(self.data)
 
 
@@ -163,7 +164,7 @@ class CollTreeWalker(urwid.ListWalker):
         spacer = " " * ((len(pos) - 1) * 2)
 
         if node.is_leaf:
-            icon = ""
+            icon = " "
         elif node.expanded and node.childs == None:
             icon = "~ "
         elif node.expanded:
@@ -256,11 +257,12 @@ class BrowserWidget(urwid.ListBox):
                 # 2: album
                 {
                     'sort': ['date', 'album'],
+                    'format': u'{0:>4} - {1}',
                 },
                 # 3: title
                 {
                     'sort': ['partofset', 'tracknr', 'title', 'id'],
-                    'format': '{1}. {2}',
+                    'format': u'{1:0>2}. {2}',
                 },
             ]
 
