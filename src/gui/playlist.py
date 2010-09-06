@@ -1,6 +1,6 @@
 import urwid
 
-from widgets import SelectableText
+from widgets import SelectableText, ScrollableList
 from update import update
 
 class PlaylistItem:
@@ -148,7 +148,7 @@ class CurPlaylistWalker(urwid.ListWalker):
         self._focus = pos
         self._modified()
 
-class Playlist(urwid.ListBox):
+class Playlist(ScrollableList):
 
     def __init__(self, xc):
         self.xc = xc

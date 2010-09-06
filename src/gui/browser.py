@@ -3,7 +3,7 @@ import xmmsclient.collections as coll
 
 from update import update
 from events import EventEmitter
-from widgets import SelectableText
+from widgets import SelectableText, ScrollableList
 
 def _node_cmp_key(item):
     """Calculate the key used to sort nodes, ignores case"""
@@ -258,7 +258,7 @@ class CollTreeWalker(urwid.ListWalker):
         self._modified()
         update()
 
-class BrowserWidget(urwid.ListBox):
+class BrowserWidget(ScrollableList):
 
     def __init__(self, xc):
         self.xc = xc
