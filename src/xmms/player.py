@@ -103,17 +103,17 @@ class Player(EventEmitter):
         else:
             self.start()
 
-    def pause(self):
-        self.connection.xmms.playback_pause()
+    def pause(self, cb=None):
+        self.connection.xmms.playback_pause(value_wrap(cb))
 
-    def start(self):
-        self.connection.xmms.playback_start()
+    def start(self, cb=None):
+        self.connection.xmms.playback_start(value_wrap(cb))
 
-    def stop(self):
-        self.connection.xmms.playback_stop()
+    def stop(self, cb=None):
+        self.connection.xmms.playback_stop(value_wrap(cb))
 
-    def forward(self):
-        self.connection.xmms.playback_tickle()
+    def forward(self, cb=None):
+        self.connection.xmms.playback_tickle(value_wrap(cb))
 
     # TODO: last()
 
