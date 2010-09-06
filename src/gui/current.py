@@ -10,7 +10,8 @@ class CurrentWidget(urwid.Pile):
         album = self.album = urwid.Text("", 'right')
         artist = self.artist = urwid.Text("", 'right')
 
-        urwid.Pile.__init__(self, [title, album, artist])
+        widgets = [urwid.AttrMap(text, 'normal') for text in title, album, artist]
+        urwid.Pile.__init__(self, widgets)
 
         player = xc.player
 

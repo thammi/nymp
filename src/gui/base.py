@@ -10,7 +10,7 @@ class BaseWidget(urwid.Frame):
         self.xc = xc
 
         # program status
-        f_status = urwid.SolidFill('S')
+        f_status = urwid.AttrMap(urwid.SolidFill('S'), 'normal')
         status = urwid.BoxAdapter(f_status, 1)
 
         # current media status
