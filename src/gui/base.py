@@ -41,7 +41,7 @@ class BaseWidget(urwid.Frame):
         self.xc = xc
 
         # spacer
-        hor_space = urwid.AttrMap(urwid.SolidFill(unichr(9474)), 'spacer')
+        hor_space = urwid.AttrMap(urwid.SolidFill(u'\u2502'), 'spacer')
 
         # program status
         status = urwid.AttrMap(urwid.Text("... i am a status bar ... someday ..."), 'status')
