@@ -25,7 +25,7 @@ class BaseWidget(urwid.Frame):
         hor_space = urwid.AttrMap(urwid.SolidFill(unichr(9474)), 'spacer')
 
         # program status
-        status = urwid.AttrMap(urwid.Text("i am a status bar ... someday ..."), 'normal')
+        status = urwid.AttrMap(urwid.Text("... i am a status bar ... someday ..."), 'normal')
 
         # current media status
         current = CurrentWidget(xc)
@@ -36,7 +36,8 @@ class BaseWidget(urwid.Frame):
         # playlist
         playlist = Playlist(xc)
 
-        self.split = split = MiddleColumns([browser, ('fixed', 1, hor_space), playlist], focus_column=0, dividechars=1)
+        widgets = [('weight', 0.6, browser), ('fixed', 1, hor_space), playlist]
+        self.split = split = MiddleColumns(widgets, focus_column=2, dividechars=1)
 
         urwid.Frame.__init__(self, split, current, status)
     

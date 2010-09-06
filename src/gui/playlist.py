@@ -88,7 +88,7 @@ class CurPlaylistWalker(urwid.ListWalker):
     
     def modified(self):
         self._modified()
-        update()
+        #update()
     
     def _get_widget(self, pos):
         playlist = self.playlist
@@ -100,7 +100,7 @@ class CurPlaylistWalker(urwid.ListWalker):
         item = self.playlist[pos]
 
         if item.meta:
-            content = u"{0} ({1}: {2})".format(item.get('title'), item.get('artist'), item.get('album'))
+            content = u"{0} [{2} by {1}]".format(item.get('title'), item.get('artist'), item.get('album'))
         else:
             content = unicode(item.media_id)
 
