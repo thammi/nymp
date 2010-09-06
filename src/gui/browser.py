@@ -184,6 +184,10 @@ class CollTreeWalker(urwid.ListWalker):
         return self._focus
 
     def get_focus(self):
+        # TODO: remove when new root is finished
+        if self.tree.childs == None:
+            return (urwid.Text("Loading ..."), None)
+
         focus = self._focus
 
         node = self._find_node(focus)
@@ -192,8 +196,7 @@ class CollTreeWalker(urwid.ListWalker):
             widget = self._build_widget(node, focus)
             return (widget, focus)
         else:
-            # TODO: restore when new root is finished
-            return (urwid.Text("Loading ..."), None)
+            return (None, None)
 
     def get_next(self, pos, force_forward=False):
         # TODO: remove when new root is finished
