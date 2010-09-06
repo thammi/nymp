@@ -1,3 +1,5 @@
+import xmmsclient
+
 from events import EventEmitter
 from helper import value_wrap
 
@@ -8,6 +10,15 @@ class Playlist(EventEmitter):
     CHANGE_EVENT = "playlist_changed"
     LOAD_EVENT = "playlist_loaded"
     POSITION_EVENT = "position_changed"
+
+    CHANGE_CLEAR = xmmsclient.PLAYLIST_CHANGED_CLEAR
+    CHANGE_ADD = xmmsclient.PLAYLIST_CHANGED_ADD
+    CHANGE_INSERT = xmmsclient.PLAYLIST_CHANGED_INSERT
+    CHANGE_MOVE = xmmsclient.PLAYLIST_CHANGED_MOVE
+    CHANGE_REMOVE = xmmsclient.PLAYLIST_CHANGED_REMOVE
+    CHANGE_SHUFFLE = xmmsclient.PLAYLIST_CHANGED_SHUFFLE
+    CHANGE_SORT = xmmsclient.PLAYLIST_CHANGED_SORT
+    CHANGE_UPDATE = xmmsclient.PLAYLIST_CHANGED_UPDATE
 
     def __init__(self, connection):
         EventEmitter.__init__(self)
