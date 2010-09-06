@@ -105,10 +105,6 @@ class CurPlaylistWalker(urwid.ListWalker):
                 pl.CHANGE_MOVE: self._change_move,
                 }
 
-        f = file('/tmp/log', 'a')
-        f.write(str(event)+'\n')
-        f.close()
-
         event_type = event['type']
         if event_type in handler:
             handler[event_type](event)
