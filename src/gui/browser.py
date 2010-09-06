@@ -60,12 +60,10 @@ class CollectionTree(EventEmitter):
         self.is_leaf = len(self.steps) == 0
 
     def add_to_playlist(self):
-        xmms = self.xc.xmms
-
         # flatten the steps
         order = sum((step['sort'] for step in self.steps), [])
 
-        xmms.playlist_add_collection(self.collection, order)
+        self.xc.playlist.add_collection(self.collection, order)
 
     def toggle_exp(self):
         if self.expanded:
@@ -93,6 +91,7 @@ class CollectionTree(EventEmitter):
                 if cb:
                     cb()
 
+            # TODO: build a wrapper
             xmms = self.xc.xmms
             xmms.coll_query_infos(self.collection, self.steps[0]['sort'], cb=acc_cb)
             self.requested = True
@@ -193,9 +192,14 @@ class CollTreeWalker(urwid.ListWalker):
             widget = self._build_widget(node, focus)
             return (widget, focus)
         else:
-            return (None, None)
+            # TODO: restore when new root is finished
+            return (urwid.Text("Loading ..."), None)
 
     def get_next(self, pos, force_forward=False):
+        # TODO: remove when new root is finished
+        if pos == None:
+                return (None, None)
+
         # get current node
         cur = self._find_node(pos)
 
@@ -218,6 +222,10 @@ class CollTreeWalker(urwid.ListWalker):
                 return (None, None)
 
     def get_prev(self, pos):
+        # TODO: remove when new root is finished
+        if pos == None:
+                return (None, None)
+
         pos = list(pos)
         pos[-1] -= 1
 
@@ -279,13 +287,12 @@ class BrowserWidget(urwid.ListBox):
         xc.listen(xc.CONNECT_EVENT, self._connect)
 
     def _connect(self):
+        # TODO: doesn't work with reconnects
         self.coll_tree.request()
 
     def keypress(self, size, key):
         def deep_fold():
             walker = self.walker
-
-            # where are we now?
             node = walker.focus_node()
 
             if node.expanded:
@@ -309,7 +316,8 @@ class BrowserWidget(urwid.ListBox):
             }
 
         if key in hotkeys:
-            hotkeys[key]()
+            if self.walker.focus_node():
+                hotkeys[key]()
         else:
             return urwid.ListBox.keypress(self, size, key)
 
