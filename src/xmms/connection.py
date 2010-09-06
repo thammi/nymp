@@ -29,8 +29,7 @@ from events import EventEmitter
 from player import Player
 from playlist import Playlist
 
-# TODO: think of a cool name
-_ID = 'INSERT_NAME_HERE'
+_ID = 'nymp'
 
 class XmmsConnection(EventEmitter):
     """Represantation of a XMMS connection. Use the modules (player)."""
