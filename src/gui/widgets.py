@@ -22,25 +22,57 @@ import urwid
 
 class ScrollableList(urwid.ListBox):
 
+    SCROLL_SPACE = 2
+
     def mouse_event(self, size, event, button, col, row, focus):
         if event == 'mouse press' and (button == 4 or button == 5):
-            walker = self.walker
-            offset, inset = self.get_focus_offset_inset(size)
-            _, cur_pos = walker.get_focus()
-
             if button == 4:
-                _, new_pos = walker.get_prev(cur_pos)
-                new_offset = offset - 1 if offset > 0 else offset
+                self.move_focus(size, -1)
             else:
-                _, new_pos = walker.get_next(cur_pos)
-                new_offset = offset + 1 if offset + 1 < size[1] else offset
-
-            if new_pos != None:
-                self.change_focus(size, new_pos, new_offset)
-
-            return None
+                self.move_focus(size, 1)
         else:
             return urwid.ListBox.mouse_event(self, size, event, button, col, row, focus)
+
+    def keypress(self, size, key):
+        hotkeys = {
+                'down': lambda: self.move_focus(size, 1),
+                'up': lambda: self.move_focus(size, -1),
+                'page down': lambda: self.move_focus(size, size[1] - self.SCROLL_SPACE),
+                'page up': lambda: self.move_focus(size, -(size[1] - self.SCROLL_SPACE)),
+            }
+
+        if key in hotkeys:
+            hotkeys[key]()
+        else:
+            return urwid.ListBox.keypress(self, size, key)
+
+    def move_focus(self, size, delta):
+        walker = self.walker
+        offset, inset = self.get_focus_offset_inset(size)
+
+        _, cur_pos = walker.get_focus()
+        if delta > 0:
+            for i in xrange(delta):
+                _, new_pos = walker.get_next(cur_pos)
+
+                if new_pos != None:
+                    cur_pos = new_pos
+                else:
+                    break
+        else:
+            for i in xrange(-delta):
+                _, new_pos = walker.get_prev(cur_pos)
+
+                if new_pos != None:
+                    cur_pos = new_pos
+                else:
+                    break
+
+        new_offset = offset + delta
+        new_offset = min(new_offset, size[1] - 1 - self.SCROLL_SPACE)
+        new_offset = max(new_offset, self.SCROLL_SPACE)
+
+        self.change_focus(size, cur_pos, new_offset)
 
 class SelectableText(urwid.Text):
 
