@@ -53,9 +53,11 @@ class ScrollableList(urwid.ListBox):
         walker = self.walker
         _, cur_pos = walker.get_focus()
 
+        # keep walking
         while True:
             _, new_pos = walker.get_prev(cur_pos)
 
+            # 'till the end
             if new_pos != None:
                 cur_pos = new_pos
             else:
@@ -67,9 +69,11 @@ class ScrollableList(urwid.ListBox):
         walker = self.walker
         _, cur_pos = walker.get_focus()
 
+        # keep walking
         while True:
             _, new_pos = walker.get_next(cur_pos)
 
+            # 'till the end
             if new_pos != None:
                 cur_pos = new_pos
             else:
@@ -81,29 +85,29 @@ class ScrollableList(urwid.ListBox):
         walker = self.walker
         offset, inset = self.get_focus_offset_inset(size)
 
+        # starting point
         _, cur_pos = walker.get_focus()
-        if delta > 0:
-            for i in xrange(delta):
-                _, new_pos = walker.get_next(cur_pos)
 
-                if new_pos != None:
-                    cur_pos = new_pos
-                else:
-                    break
-        else:
-            for i in xrange(-delta):
+        # stepping the desired amount of steps
+        for i in xrange(abs(delta)):
+            # up or down
+            if delta > 0:
+                _, new_pos = walker.get_next(cur_pos)
+            else:
                 _, new_pos = walker.get_prev(cur_pos)
 
-                if new_pos != None:
-                    cur_pos = new_pos
-                else:
-                    break
+            # stopping at the end
+            if new_pos != None:
+                cur_pos = new_pos
+            else:
+                break
 
         # calculating the new position (display)
         new_offset = offset + delta
         new_offset = min(new_offset, size[1] - 1 - self.SCROLL_SPACE)
         new_offset = max(new_offset, self.SCROLL_SPACE)
 
+        # actually setting the new focus
         self.change_focus(size, cur_pos, new_offset)
 
 class SelectableText(urwid.Text):
