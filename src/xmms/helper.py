@@ -8,6 +8,9 @@ def reduce_meta(meta):
     tuples = ((name, value) for (plugin, name), value in meta.items())
     return dict(tuples)
 
-def value_wrap(value, cb):
-    cb(value.value())
+def value_wrap(cb):
+    if cb:
+        return lambda value: cb(value.value())
+    else:
+        return None
 

@@ -48,7 +48,7 @@ class Player(EventEmitter):
 
     def get_status(self, cb):
         xmms = self.connection.xmms
-        xmms.playback_status(lambda v: value_wrap(v, cb))
+        xmms.playback_status(value_wrap(cb))
 
     def get_current(self, cb):
         xmms = self.connection.xmms
@@ -59,13 +59,13 @@ class Player(EventEmitter):
 
         if media_id:
             xmms = self.connection.xmms
-            xmms.medialib_get_info(media_id, cb=lambda v: value_wrap(v, cb))
+            xmms.medialib_get_info(media_id, cb=value_wrap(cb))
         else:
             cb(None)
 
     def get_status(self, cb):
         xmms = self.connection.xmms
-        xmms.playback_status(lambda v: value_wrap(v, cb))
+        xmms.playback_status(value_wrap(cb))
 
     def _current_info(self, value):
         self.emit(self.CURRENT_EVENT, value)
