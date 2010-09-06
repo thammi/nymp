@@ -44,7 +44,7 @@ class BaseWidget(urwid.Frame):
         hor_space = urwid.AttrMap(urwid.SolidFill(unichr(9474)), 'spacer')
 
         # program status
-        status = urwid.AttrMap(urwid.Text("... i am a status bar ... someday ..."), 'normal')
+        status = urwid.AttrMap(urwid.Text("... i am a status bar ... someday ..."), 'status')
 
         # current media status
         current = CurrentWidget(xc)

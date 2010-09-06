@@ -32,7 +32,7 @@ class CurrentWidget(urwid.Pile):
 
         divider = urwid.AttrMap(urwid.Divider(unichr(9472)), 'spacer')
 
-        widgets = [urwid.AttrMap(text, 'normal') for text in title, album, artist]
+        widgets = [urwid.AttrMap(text, 'playing') for text in title, album, artist]
         widgets.append(divider)
 
         urwid.Pile.__init__(self, widgets)

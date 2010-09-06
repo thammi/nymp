@@ -29,14 +29,18 @@ normal_palette = {
         'current': ('dark green', 'default'),
         'current_focus': ('dark green', 'light gray'),
         'spacer': ('dark gray', 'default'),
+        'status': ('dark gray', 'default'),
+        'playing': ('dark green', 'default'),
         }
 
 high_palette = {
         'normal': ('#FFF', '#000'),
-        'focus': ('#0C0', '#666'),
-        'current': ('#66F', '#000'),
-        'current_focus': ('#00F', '#666'),
+        'focus': ('#000', '#666'),
+        'current': ('#393', '#000'),
+        'current_focus': ('#9F9', '#666'),
         'spacer': ('#666', '#000'),
+        'status': ('#666', '#000'),
+        'playing': ('#393', '#000'),
         }
 
 mono_palette = {
