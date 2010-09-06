@@ -9,6 +9,16 @@ class NoEventException(Exception):
     def __str__(self):
         return "NoEventException: %s for %s" % (self.listener, self.event_id)
 
+class MultipleRegistrationException(Exception):
+    """Exception thrown if the event was already registered"""
+
+    def __init__(self, event_id, emitter):
+        self.event_id = event_id
+        self.emitter = emitter
+
+    def __str__(self):
+        return "MultipleRegistrationException: %s on %s" % (self.event_id, emitter)
+
 # TODO: use glib?
 class EventEmitter:
     """Base class managing and emitting events"""
@@ -44,6 +54,10 @@ class EventEmitter:
 
         if event_id not in listeners:
             listeners[event_id] = []
+        else:
+            # duplicated event ids should be detectet
+            if self._strict:
+                raise MultipleRegistrationException(event_id, self)
 
     def list_events(self):
         return self._listeners.keys()

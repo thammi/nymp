@@ -7,19 +7,18 @@ class Playlist(EventEmitter):
 
     CHANGE_EVENT = "playlist_changed"
     LOAD_EVENT = "playlist_loaded"
-    POSITION_EVENT = "playlist_loaded"
+    POSITION_EVENT = "position_changed"
 
     def __init__(self, connection):
         EventEmitter.__init__(self)
         
         self.register(self.CHANGE_EVENT)
         self.register(self.LOAD_EVENT)
+        self.register(self.POSITION_EVENT)
 
         self.connection = connection
 
         self.current = None
-
-        self.register(self.CHANGE_EVENT)
 
         connection.listen(connection.CONNECT_EVENT, self._connected)
 
