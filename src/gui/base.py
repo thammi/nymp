@@ -4,6 +4,17 @@ from current import CurrentWidget
 from browser import BrowserWidget
 from playlist import Playlist
 
+class MiddleColumns(urwid.Columns):
+
+    def keypress(self, size, key):
+        # we don't want to change the column with arrow keys
+        filtered = ['right', 'left']
+        if key not in filtered:
+            return urwid.Columns.keypress(self, size, key)
+        else:
+            return self.get_focus().keypress(size, key)
+
+
 class BaseWidget(urwid.Frame):
 
     def __init__(self, xc):
@@ -22,7 +33,7 @@ class BaseWidget(urwid.Frame):
         # playlist
         playlist = Playlist(xc)
 
-        self.split = split = urwid.Columns([browser, playlist], focus_column=0)
+        self.split = split = MiddleColumns([browser, playlist], focus_column=0)
 
         urwid.Frame.__init__(self, split, current, status)
     
