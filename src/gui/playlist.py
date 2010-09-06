@@ -94,9 +94,53 @@ class CurPlaylistWalker(urwid.ListWalker):
         self.xc.playlist.position(name, self._position_changed)
 
     def _playlist_changed(self, event):
-        # TODO: implement!
-        # watch out for focus and position when 
-        pass
+        pl = self.xc.playlist
+
+        handler = {
+                # TODO: sort, shuffle, update
+                pl.CHANGE_ADD: self._change_insert,
+                pl.CHANGE_INSERT: self._change_insert,
+                pl.CHANGE_CLEAR: self._change_clear,
+                pl.CHANGE_REMOVE: self._change_remove,
+                pl.CHANGE_MOVE: self._change_move,
+                }
+
+        f = file('/tmp/log', 'a')
+        f.write(str(event)+'\n')
+        f.close()
+
+        event_type = event['type']
+        if event_type in handler:
+            handler[event_type](event)
+        else:
+            raise NotImplementedError
+
+    def _change_move(self, event):
+        playlist = self.playlist
+
+        tmp = playlist[event['position']]
+        del playlist[event['position']]
+        playlist.insert(event['newposition'], tmp)
+
+        self.modified()
+    
+    def _change_insert(self, event):
+        item = PlaylistItem(event['id'])
+        self.playlist.insert(event['position'], item)
+
+    def _change_remove(self, event):
+        position = event['position']
+        del self.playlist[position]
+
+        if position <= self._focus:
+            self._focus -= 1
+
+        self.modified()
+
+    def _change_clear(self, event):
+        self._focus = 0
+        self.playlist = []
+        self.modified()
 
     def _position_changed(self, position):
         if position['name'] == self.cur:
