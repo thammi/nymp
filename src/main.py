@@ -11,6 +11,10 @@ normal_palette = {
         }
 
 high_palette = {
+        'normal': ('#FFF', '#000'),
+        'focus': ('#0C2', '#444'),
+        'current': ('#33F', '#000'),
+        'current_focus': ('#00F', '#444'),
         }
 
 mono_palette = {
@@ -54,7 +58,7 @@ frame = BaseWidget(xc)
 palette = palette_mixer(normal_palette, mono_palette, high_palette)
 loop = urwid.MainLoop(frame, palette, event_loop=urwid.GLibEventLoop())
 
-#loop.screen.set_terminal_properties(256)
+loop.screen.set_terminal_properties(256)
 
 register_update(loop.draw_screen)
 loop.run()
