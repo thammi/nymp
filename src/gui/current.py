@@ -51,9 +51,20 @@ class CurrentWidget(urwid.Pile):
             rm = []
             
         if 'title' in rm:
-            title = "%i. %s" % (rm['tracknr'], rm['title']) if 'tracknr' in rm else rm['title']
+            if 'tracknr' in rm:
+                # use title and track number
+                title = "%i. %s" % (rm['tracknr'], rm['title']) 
+            else:
+                # use the title only
+                title = rm['title']
         else:
-            title = rm['url'] if 'url' in rm else ""
+            if 'url' in rm:
+                # fall back to the url
+                url = rm['url']
+                title = url[url.rfind('/')+1:]
+            else:
+                # tag your library :P
+                title = "Unknown"
 
         album = rm['album'] if 'album' in rm else ""
         artist = rm['artist'] if 'artist' in rm else ""
