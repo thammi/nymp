@@ -21,6 +21,7 @@
 import urwid
 
 class ScrollableList(urwid.ListBox):
+    '''A ListBox with mouse scrolling and smoother scrolling with offset'''
 
     SCROLL_SPACE = 2
 
@@ -39,12 +40,42 @@ class ScrollableList(urwid.ListBox):
                 'up': lambda: self.move_focus(size, -1),
                 'page down': lambda: self.move_focus(size, size[1] - self.SCROLL_SPACE),
                 'page up': lambda: self.move_focus(size, -(size[1] - self.SCROLL_SPACE)),
+                'home': lambda: self.move_top(size),
+                'end': lambda: self.move_bottom(size),
             }
 
         if key in hotkeys:
             hotkeys[key]()
         else:
             return urwid.ListBox.keypress(self, size, key)
+
+    def move_top(self, size):
+        walker = self.walker
+        _, cur_pos = walker.get_focus()
+
+        while True:
+            _, new_pos = walker.get_prev(cur_pos)
+
+            if new_pos != None:
+                cur_pos = new_pos
+            else:
+                break
+
+        self.change_focus(size, cur_pos)
+
+    def move_bottom(self, size):
+        walker = self.walker
+        _, cur_pos = walker.get_focus()
+
+        while True:
+            _, new_pos = walker.get_next(cur_pos)
+
+            if new_pos != None:
+                cur_pos = new_pos
+            else:
+                break
+
+        self.change_focus(size, cur_pos)
 
     def move_focus(self, size, delta):
         walker = self.walker
@@ -68,6 +99,7 @@ class ScrollableList(urwid.ListBox):
                 else:
                     break
 
+        # calculating the new position (display)
         new_offset = offset + delta
         new_offset = min(new_offset, size[1] - 1 - self.SCROLL_SPACE)
         new_offset = max(new_offset, self.SCROLL_SPACE)
