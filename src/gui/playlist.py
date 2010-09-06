@@ -10,8 +10,22 @@ class PlaylistItem:
         self.meta = None
         self.requested = False
 
-    def request(self, xc):
-        raise NotImplementedError
+    def get(self, key):
+        meta = self.meta
+        if key in meta:
+            return meta[key]
+        else:
+            return "Unknown"
+
+    def request(self, xc, cb):
+        if not self.requested:
+            self.requested = True
+
+            xc.playlist.get_info(self.media_id, lambda v: self._info_cb(v, cb))
+
+    def _info_cb(self, meta, cb):
+        self.meta = meta
+        cb(meta)
 
     def delete(self, xc):
         raise NotImplementedError
@@ -23,6 +37,8 @@ class PlaylistItem:
         raise NotImplementedError
 
 class CurPlaylistWalker(urwid.ListWalker):
+
+    PRE_CACHING = 3
 
     def __init__(self, xc):
         self.xc = xc
@@ -75,8 +91,20 @@ class CurPlaylistWalker(urwid.ListWalker):
         update()
     
     def _get_widget(self, pos):
+        playlist = self.playlist
+
+        for i in range(pos-self.PRE_CACHING, pos+self.PRE_CACHING+1):
+            if i >= 0 and i < len(playlist):
+                playlist[i].request(self.xc, lambda v: self.modified())
+
         item = self.playlist[pos]
-        text = SelectableText(unicode(item.media_id))
+
+        if item.meta:
+            content = u"{0} ({1}: {2})".format(item.get('title'), item.get('artist'), item.get('album'))
+        else:
+            content = unicode(item.media_id)
+
+        text = SelectableText(content, wrap='clip')
         
         if self.position == pos:
             return urwid.AttrMap(text, 'current', 'current_focus')
