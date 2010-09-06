@@ -12,9 +12,9 @@ normal_palette = {
 
 high_palette = {
         'normal': ('#FFF', '#000'),
-        'focus': ('#0C2', '#444'),
-        'current': ('#33F', '#000'),
-        'current_focus': ('#00F', '#444'),
+        'focus': ('#0C0', '#666'),
+        'current': ('#66F', '#000'),
+        'current_focus': ('#00F', '#666'),
         }
 
 mono_palette = {
