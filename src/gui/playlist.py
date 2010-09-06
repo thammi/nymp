@@ -254,3 +254,11 @@ class Playlist(ScrollableList):
         else:
             return ScrollableList.keypress(self, size, key)
 
+    def move_top(self, size):
+        # moving up without iterating
+        self.change_focus(size, 0)
+
+    def move_bottom(self, size):
+        # moving down without iterating
+        self.change_focus(size, len(self.walker.playlist)-1)
+
