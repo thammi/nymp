@@ -342,5 +342,5 @@ class BrowserWidget(ScrollableList):
             if self.walker.focus_node():
                 hotkeys[key]()
         else:
-            return urwid.ListBox.keypress(self, size, key)
+            return ScrollableList.keypress(self, size, key)
 

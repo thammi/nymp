@@ -47,15 +47,6 @@ class PlaylistItem:
         self.meta = meta
         cb(meta)
 
-    def delete(self, xc):
-        raise NotImplementedError
-
-    def move_up(self, xc):
-        raise NotImplementedError
-
-    def move_down(self, xc):
-        raise NotImplementedError
-
 class CurPlaylistWalker(urwid.ListWalker):
 
     PRE_CACHING = 10
@@ -64,6 +55,7 @@ class CurPlaylistWalker(urwid.ListWalker):
         self.xc = xc
 
         self.playlist = []
+        self.selected = []
         self.cur = None
         self.position = None
         self._focus = 0
@@ -176,7 +168,9 @@ class CurPlaylistWalker(urwid.ListWalker):
         text = SelectableText(content, wrap='clip')
         
         # are we in the spotlight?
-        if self.position == pos:
+        if pos in self.selected:
+            return urwid.AttrMap(text, 'selected', 'selected_focus')
+        elif self.position == pos:
             return urwid.AttrMap(text, 'current', 'current_focus')
         else:
             return urwid.AttrMap(text, 'normal', 'focus')
@@ -208,6 +202,34 @@ class CurPlaylistWalker(urwid.ListWalker):
         self._focus = pos
         self._modified()
 
+    def delete_entry(self):
+        if self.playlist:
+            pl = self.xc.playlist
+            pl.remove_entry(self._focus, self.cur)
+
+    def toggle_select(self):
+        focus = self._focus
+        selected = self.selected
+
+        # toggle focus
+        if focus in selected:
+            selected.remove(focus)
+        else:
+            selected.append(focus)
+
+        self._modified()
+
+    def clear_select(self):
+        self.selected = []
+
+        self._modified()
+
+    def move_up(self):
+        raise NotImplementedError
+
+    def move_down(self):
+        raise NotImplementedError
+
 class Playlist(ScrollableList):
 
     def __init__(self, xc):
@@ -215,4 +237,20 @@ class Playlist(ScrollableList):
 
         self.walker = walker = CurPlaylistWalker(xc)
         urwid.ListBox.__init__(self, walker)
+
+    def keypress(self, size, key):
+        def toggle_walk():
+            self.walker.toggle_select()
+            self.move_focus(size, 1)
+
+        hotkeys = {
+                'd': self.walker.delete_entry,
+                ' ': toggle_walk,
+                'meta  ': self.walker.clear_select,
+            }
+
+        if key in hotkeys:
+            hotkeys[key]()
+        else:
+            return ScrollableList.keypress(self, size, key)
 
