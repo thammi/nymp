@@ -1,7 +1,6 @@
 - find a name
-- gui: design (divider, ...)
-- browser shouldn't crash w/o data
-- playlist management (current)
+- playlist update
+- library update
 - status bar
 - library browser root?
   - collections

@@ -92,13 +92,22 @@ class CurPlaylistWalker(urwid.ListWalker):
     
     def _get_widget(self, pos):
         playlist = self.playlist
+        item = playlist[pos]
 
-        for i in range(pos-self.PRE_CACHING, pos+self.PRE_CACHING+1):
-            if i >= 0 and i < len(playlist):
-                playlist[i].request(self.xc, lambda v: self.modified())
+        def request_cb(meta):
+            self.modified()
 
-        item = self.playlist[pos]
+        # make sure we get metadata
+        item.request(self.xc, request_cb)
 
+        # pre-cache
+        for i in range(1, self.PRE_CACHING + 1):
+            if pos - i >= 0:
+                playlist[pos-i].request(self.xc, request_cb)
+            if pos + i < len(playlist):
+                playlist[pos+i].request(self.xc, request_cb)
+
+        # what should we display?
         if item.meta:
             content = u"{0} [{2} by {1}]".format(item.get('title'), item.get('artist'), item.get('album'))
         else:
@@ -106,6 +115,7 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         text = SelectableText(content, wrap='clip')
         
+        # are we in the spotlight?
         if self.position == pos:
             return urwid.AttrMap(text, 'current', 'current_focus')
         else:
