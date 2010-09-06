@@ -81,9 +81,9 @@ class Playlist(EventEmitter):
         xmms = self.connection.xmms
         xmms.playlist_move(old, new, playlist, value_wrap(cb))
 
-    def move_entry(self, media_id, playlist=None, cb=None):
+    def remove_entry(self, position, playlist=None, cb=None):
         xmms = self.connection.xmms
-        xmms.playlist_remove_entry(old, new, playlist, value_wrap(cb))
+        xmms.playlist_remove_entry(position, playlist, value_wrap(cb))
 
     def get_info(self, media_id, cb):
         xmms = self.connection.xmms
