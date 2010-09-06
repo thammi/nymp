@@ -23,6 +23,13 @@ import urwid
 from gui import BaseWidget, get_updater
 from xmms import XmmsConnection
 
+# TODO: remove logging :D
+import logging
+h = logging.FileHandler('/tmp/log')
+rl = logging.getLogger()
+rl.addHandler(h)
+rl.setLevel(logging.DEBUG)
+
 normal_palette = {
         'normal': ('default', 'default'),
         'focus': ('black', 'light gray'),
@@ -31,6 +38,8 @@ normal_palette = {
         'spacer': ('dark gray', 'default'),
         'status': ('dark gray', 'default'),
         'playing': ('dark green', 'default'),
+        'selected': ('yellow', 'default'),
+        'selected_focus': ('yellow', 'dark gray'),
         }
 
 high_palette = {
@@ -41,6 +50,8 @@ high_palette = {
         'spacer': ('#666', '#000'),
         'status': ('#666', '#000'),
         'playing': ('#393', '#000'),
+        'selected': ('#FF0', '#000'),
+        'selected_focus': ('#FF0', '#666'),
         }
 
 mono_palette = {
