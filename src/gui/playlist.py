@@ -38,7 +38,7 @@ class PlaylistItem:
 
 class CurPlaylistWalker(urwid.ListWalker):
 
-    PRE_CACHING = 3
+    PRE_CACHING = 10
 
     def __init__(self, xc):
         self.xc = xc
@@ -88,7 +88,7 @@ class CurPlaylistWalker(urwid.ListWalker):
     
     def modified(self):
         self._modified()
-        #update()
+        update()
     
     def _get_widget(self, pos):
         playlist = self.playlist

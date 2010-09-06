@@ -21,7 +21,6 @@ class BaseWidget(urwid.Frame):
         self.xc = xc
 
         # spacer
-        vert_space = urwid.AttrMap(urwid.Divider('-'), 'spacer')
         hor_space = urwid.AttrMap(urwid.SolidFill(unichr(9474)), 'spacer')
 
         # program status

@@ -1,3 +1,3 @@
 from base import BaseWidget
-from update import register_update
+from update import get_updater
 

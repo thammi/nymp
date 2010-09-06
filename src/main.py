@@ -1,6 +1,6 @@
 import urwid
 
-from gui import BaseWidget, register_update
+from gui import BaseWidget, get_updater
 from xmms import XmmsConnection
 
 normal_palette = {
@@ -62,7 +62,8 @@ loop = urwid.MainLoop(frame, palette, event_loop=urwid.GLibEventLoop())
 
 loop.screen.set_terminal_properties(256)
 
-register_update(loop.draw_screen)
+get_updater().loop = loop
+
 loop.run()
 
 

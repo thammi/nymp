@@ -1,12 +1,28 @@
-_update_fun = None
+_updater = None
+
+class Updater():
+
+    def __init__(self):
+        self.loop = None
+
+    def _redraw(self, *args):
+        if self.need_update:
+            self.need_update = False
+            self.loop.draw_screen()
+
+    def update(self):
+        loop = self.loop
+
+        if loop:
+            self.need_update = True
+            loop.set_alarm_in(0, self._redraw)
 
 def update():
-    if _update_fun:
-        _update_fun()
-        return True
-    else:
-        return False
+    get_updater().update()
 
-def register_update(update_fun):
-    global _update_fun
-    _update_fun = update_fun
+def get_updater():
+    global _updater
+    if _updater == None:
+        _updater = Updater()
+
+    return _updater
