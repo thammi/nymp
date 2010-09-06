@@ -202,6 +202,9 @@ class CurPlaylistWalker(urwid.ListWalker):
         self._focus = pos
         self._modified()
 
+    def goto(self):
+        self.xc.playlist.goto(self._focus)
+
     def delete_entry(self):
         if self.playlist:
             pl = self.xc.playlist
@@ -247,6 +250,7 @@ class Playlist(ScrollableList):
                 'd': self.walker.delete_entry,
                 ' ': toggle_walk,
                 'meta  ': self.walker.clear_select,
+                'enter': self.walker.goto,
             }
 
         if key in hotkeys:

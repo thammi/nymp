@@ -89,6 +89,24 @@ class Playlist(EventEmitter):
         xmms = self.connection.xmms
         xmms.medialib_get_info(media_id, value_wrap(cb))
 
+    def goto(self, position, cb=None):
+        xmms = self.connection.xmms
+        player = self.connection.player
+
+        def status_cb(status):
+            if status != player.STATUS_PLAY:
+                player.start(cb)
+            elif cb:
+                cb(status)
+
+        def tickle_cb(value):
+            player.get_status(status_cb)
+
+        def next_cb(value):
+            xmms.playback_tickle(tickle_cb)
+
+        xmms.playlist_set_next(position, next_cb)
+
     def _connected(self):
         xmms = self.connection.xmms
 
