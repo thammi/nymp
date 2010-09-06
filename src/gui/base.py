@@ -20,9 +20,12 @@ class BaseWidget(urwid.Frame):
     def __init__(self, xc):
         self.xc = xc
 
+        # spacer
+        vert_space = urwid.AttrMap(urwid.Divider('-'), 'spacer')
+        hor_space = urwid.AttrMap(urwid.SolidFill(unichr(9474)), 'spacer')
+
         # program status
-        f_status = urwid.AttrMap(urwid.SolidFill('S'), 'normal')
-        status = urwid.BoxAdapter(f_status, 1)
+        status = urwid.AttrMap(urwid.Text("i am a status bar ... someday ..."), 'normal')
 
         # current media status
         current = CurrentWidget(xc)
@@ -33,13 +36,13 @@ class BaseWidget(urwid.Frame):
         # playlist
         playlist = Playlist(xc)
 
-        self.split = split = MiddleColumns([browser, playlist], focus_column=0)
+        self.split = split = MiddleColumns([browser, ('fixed', 1, hor_space), playlist], focus_column=0, dividechars=1)
 
         urwid.Frame.__init__(self, split, current, status)
     
     def focus_swap(self):
         split = self.split
-        split.set_focus(0 if split.get_focus_column() else 1)
+        split.set_focus(0 if split.get_focus_column() else 2)
 
     def keypress(self, size, inp):
         if urwid.Frame.keypress(self, size, inp):

@@ -8,6 +8,7 @@ normal_palette = {
         'focus': ('black', 'light gray'),
         'current': ('dark green', 'default'),
         'current_focus': ('dark green', 'light gray'),
+        'spacer': ('dark gray', 'default'),
         }
 
 high_palette = {
@@ -15,6 +16,7 @@ high_palette = {
         'focus': ('#0C0', '#666'),
         'current': ('#66F', '#000'),
         'current_focus': ('#00F', '#666'),
+        'spacer': ('#666', '#000'),
         }
 
 mono_palette = {
