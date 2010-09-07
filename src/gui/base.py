@@ -19,6 +19,7 @@
 ##############################################################################
 
 import urwid
+import time
 
 from current import CurrentWidget
 from browser import BrowserWidget
@@ -39,6 +40,7 @@ class BaseWidget(urwid.Frame):
 
     def __init__(self, xc):
         self.xc = xc
+        self.last_click = {}
 
         # spacer
         hor_space = urwid.AttrMap(urwid.SolidFill(u'\u2502'), 'spacer')
@@ -63,6 +65,33 @@ class BaseWidget(urwid.Frame):
     def focus_swap(self):
         split = self.split
         split.set_focus(0 if split.get_focus_column() else 2)
+
+    # transparently inserting double click buttons
+    # TODO: find a better way to hook this in ... monkey patching?
+    # TODO: 'dragging' around fires accidental double-clicks
+    def mouse_event(self, size, event, button, col, row, focus):
+        # time between the two clicks activating a double click
+        DOUBLE_CLICK_TIME = 0.25
+        DRAG_PROTECT_TIME = 0.1
+        # mouse buttons which can trigger a double click
+        DOUBLE_CLICKABLE = [1]
+
+        if button in DOUBLE_CLICKABLE:
+            last = self.last_click
+            now = time.time()
+
+            if button in last:
+                delta = now - last[button]
+
+                # check for double click
+                if delta > DRAG_PROTECT_TIME and delta < DOUBLE_CLICK_TIME:
+                    # add the magic offset
+                    button += 10
+
+            # save current click
+            last[button] = now
+
+        urwid.Frame.mouse_event(self, size, event, button, col, row, focus)
 
     def keypress(self, size, inp):
         if urwid.Frame.keypress(self, size, inp):
