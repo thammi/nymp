@@ -41,7 +41,7 @@ def _create_collection(data, attributes, base):
     for value, attr in zip(data, attributes):
         if value == None:
             # special case if the property doesn't exist
-            new_coll = coll.Complement(coll.Has(new_coll, field=attr))
+            new_coll = ~coll.Has(coll.Universe(), field=attr) & new_coll
         else:
             # SRSLY? why do I have to care about encoding here????
             if isinstance(value, basestring):
@@ -121,7 +121,7 @@ class CollectionTree(EventEmitter):
         steps = self.steps
 
         # turn the dictionary into a list
-        data = [unicode(item[attr]) for attr in steps[0]['sort']]
+        data = [item[attr] for attr in steps[0]['sort']]
 
         # actually create the node
         return CollectionTree(self.xc, steps[1:], data, self)
@@ -150,7 +150,7 @@ class CollectionTree(EventEmitter):
         if 'format' in cur_step:
             return cur_step['format'].format(*data)
         else:
-            return ' - '.join(data)
+            return ' - '.join(unicode(item) for item in data)
 
     def format(self):
         # parents know best ...
