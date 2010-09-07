@@ -210,7 +210,17 @@ class CurPlaylistWalker(urwid.ListWalker):
     def delete_entry(self):
         if self.playlist:
             pl = self.xc.playlist
-            pl.remove_entry(self._focus, self.cur)
+            selected = self.selected
+
+            if selected:
+                # remove all selected
+                for i in sorted(selected, reverse=True):
+                    pl.remove_entry(i, self.cur)
+
+                self.clear_select()
+            else:
+                # remove item in focus
+                pl.remove_entry(self._focus, self.cur)
 
     def toggle_select(self):
         focus = self._focus
