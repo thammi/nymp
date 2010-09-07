@@ -48,7 +48,7 @@ class CurrentWidget(urwid.Pile):
         if meta:
             rm = reduce_meta(meta)
         else:
-            rm = []
+            rm = {}
             
         if 'title' in rm:
             if 'tracknr' in rm:
@@ -62,6 +62,9 @@ class CurrentWidget(urwid.Pile):
                 # fall back to the url
                 url = rm['url']
                 title = url[url.rfind('/')+1:]
+            elif rm == {}:
+                # nothing loaded
+                title = ""
             else:
                 # tag your library :P
                 title = "Unknown"
@@ -74,8 +77,4 @@ class CurrentWidget(urwid.Pile):
         self.artist.set_text(artist)
         
         update()
-
-        # TODO: ugly!
-        #from main import loop
-        #loop.draw_screen()
 
