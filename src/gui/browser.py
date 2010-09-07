@@ -315,7 +315,9 @@ class BrowserWidget(ScrollableList):
 
     def mouse_event(self, size, event, button, col, row, focus):
         actions = {
+                # left button
                 3: lambda node: node.toggle_exp(),
+                # double click (right)
                 11: lambda node: node.add_to_playlist(),
             }
 
