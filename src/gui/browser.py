@@ -313,6 +313,23 @@ class BrowserWidget(ScrollableList):
         # TODO: doesn't work with reconnects
         self.coll_tree.request()
 
+    def mouse_event(self, size, event, button, col, row, focus):
+        actions = {
+                3: lambda node: node.toggle_exp(),
+                11: lambda node: node.add_to_playlist(),
+            }
+
+        if button == 3 or button == 11:
+            # select item under the mouse
+            offset, inset = self.get_focus_offset_inset(size)
+            self.move_focus(size, row - offset)
+
+            node = self.walker.focus_node()
+            if node:
+                actions[button](node)
+        else:
+            ScrollableList.mouse_event(self, size, event, button, col, row, focus)
+
     def keypress(self, size, key):
         def deep_fold():
             walker = self.walker
