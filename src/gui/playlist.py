@@ -116,11 +116,13 @@ class CurPlaylistWalker(urwid.ListWalker):
         item = PlaylistItem(event['id'])
         self.playlist.insert(event['position'], item)
 
+        self.modified()
+
     def _change_remove(self, event):
         position = event['position']
         del self.playlist[position]
 
-        if position <= self._focus:
+        if position < self._focus or len(self.playlist) <= self._focus:
             self._focus -= 1
 
         self.modified()
