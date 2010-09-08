@@ -35,9 +35,13 @@ class ScrollableList(urwid.ListBox):
             return urwid.ListBox.mouse_event(self, size, event, button, col, row, focus)
 
     def keypress(self, size, key):
+        down = lambda: self.move_focus(size, 1)
+        up = lambda: self.move_focus(size, -1)
         hotkeys = {
-                'down': lambda: self.move_focus(size, 1),
-                'up': lambda: self.move_focus(size, -1),
+                'down': down,
+                'j': down,
+                'up': up,
+                'k': up,
                 'page down': lambda: self.move_focus(size, size[1] - self.SCROLL_SPACE),
                 'page up': lambda: self.move_focus(size, -(size[1] - self.SCROLL_SPACE)),
                 'home': lambda: self.move_top(size),

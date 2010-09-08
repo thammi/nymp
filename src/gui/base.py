@@ -101,6 +101,8 @@ class BaseWidget(urwid.Frame):
                     'p': lambda: xc.player.toggle(),
                     'n': lambda: xc.player.forward(),
                     'tab': self.focus_swap,
+                    'h': lambda: self.split.set_focus(0),
+                    'l': lambda: self.split.set_focus(2),
                     }
 
             if inp in hotkeys:
