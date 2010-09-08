@@ -56,8 +56,10 @@ high_palette = {
 
 mono_palette = {
         'focus': 'standout',
-        'current': 'underline',
-        'current_focus': 'standout',
+        'current': 'bold,underline',
+        'current_focus': 'bold,standout',
+        'selected': 'bold',
+        'selected_focus': 'bold,standout',
         }
 
 # merging palettes into the format urwid wants
@@ -95,6 +97,7 @@ frame = BaseWidget(xc)
 palette = palette_mixer(normal_palette, mono_palette, high_palette)
 loop = urwid.MainLoop(frame, palette, event_loop=urwid.GLibEventLoop())
 
+#loop.screen.set_terminal_properties(1)
 loop.screen.set_terminal_properties(256)
 
 get_updater().loop = loop
