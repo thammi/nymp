@@ -35,6 +35,26 @@ class MiddleColumns(urwid.Columns):
         else:
             return self.get_focus().keypress(size, key)
 
+    def mouse_event(self, size, event, button, col, row, focus):
+        # move focus to clicked column
+        if event == 'mouse press':
+            widths = self.column_widths(size)
+
+            # finding the clicked column
+            x = 0
+            for column, width in enumerate(widths):
+                x += width + self.dividechars
+
+                # we found it
+                if col < x:
+                    # skip the divider
+                    if column % 2 == 0:
+                        self.set_focus(column)
+
+                    break
+
+        urwid.Columns.mouse_event(self, size, event, button, col, row, focus)
+
 
 class BaseWidget(urwid.Frame):
 
