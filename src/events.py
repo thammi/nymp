@@ -37,7 +37,7 @@ class MultipleRegistrationException(Exception):
         self.emitter = emitter
 
     def __str__(self):
-        return "MultipleRegistrationException: %s on %s" % (self.event_id, emitter)
+        return "MultipleRegistrationException: %s on %s" % (self.event_id, self.emitter)
 
 # TODO: use glib?
 class EventEmitter:
@@ -64,7 +64,7 @@ class EventEmitter:
             if self._strict:
                 raise NoEventException(event_id, listener)
             else:
-                register(event_id)
+                self.register(event_id)
 
         listeners[event_id].append(listener)
 

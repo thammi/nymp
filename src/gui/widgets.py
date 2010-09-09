@@ -54,7 +54,7 @@ class ScrollableList(urwid.ListBox):
             return urwid.ListBox.keypress(self, size, key)
 
     def move_top(self, size):
-        walker = self.walker
+        walker = self.body
         _, cur_pos = walker.get_focus()
 
         # keep walking
@@ -86,7 +86,7 @@ class ScrollableList(urwid.ListBox):
         self.change_focus(size, cur_pos)
 
     def move_focus(self, size, delta):
-        walker = self.walker
+        walker = self.body
         offset, inset = self.get_focus_offset_inset(size)
 
         # starting point

@@ -19,10 +19,13 @@
 ##############################################################################
 
 from xmmsclient import userconfdir_get
+from os.path import join
+
+CLIENT_ID = 'nymp'
 
 def get_config_dir():
     """Get configuration directory according to XMMS2 guideline"""
-    return join(userconfdir_get(), "clients", _ID)
+    return join(userconfdir_get(), "clients", CLIENT_ID)
 
 def reduce_meta(meta):
     tuples = ((name, value) for (plugin, name), value in meta.items())

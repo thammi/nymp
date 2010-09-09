@@ -83,10 +83,6 @@ class Player(EventEmitter):
         else:
             cb(None)
 
-    def get_status(self, cb):
-        xmms = self.connection.xmms
-        xmms.playback_status(value_wrap(cb))
-
     def _current_info(self, value):
         self.emit(self.CURRENT_EVENT, value)
 

@@ -22,14 +22,12 @@ import xmmsclient
 from xmmsclient import XMMS
 from xmmsclient.glib import GLibConnector
 
-from os.path import join
-
 from events import EventEmitter
 
 from player import Player
 from playlist import Playlist
 
-_ID = 'nymp'
+from helper import CLIENT_ID
 
 class XmmsConnection(EventEmitter):
     """Represantation of a XMMS connection. Use the modules (player)."""
@@ -61,7 +59,7 @@ class XmmsConnection(EventEmitter):
                 self.emit(self.DISCONNECT_EVENT)
 
             try:
-                xmms = self.xmms = XMMS(_ID)
+                xmms = self.xmms = XMMS(CLIENT_ID)
 
                 # TODO: use path conventions
                 xmms.connect(disconnect_func=disconnected)

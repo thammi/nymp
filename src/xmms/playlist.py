@@ -59,7 +59,7 @@ class Playlist(EventEmitter):
 
     def clear(self, playlist=None, cb=None):
         xmms = self.connection.xmms
-        xmms.playlist_clear(coll, order, playlist, value_wrap(cb))
+        xmms.playlist_clear(playlist, value_wrap(cb))
 
     def current_playlist(self, cb):
         xmms = self.connection.xmms
