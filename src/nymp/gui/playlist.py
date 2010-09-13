@@ -30,7 +30,7 @@ class PlaylistItem:
         self.meta = None
         self.requested = False
 
-    def get(self, key):
+    def __getitem__(self, key):
         meta = self.meta
         if key in meta:
             return meta[key]
@@ -163,7 +163,7 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         # what should we display?
         if item.meta:
-            content = u"{0} [{2} by {1}]".format(item.get('title'), item.get('artist'), item.get('album'))
+            content = u"{2} - {0} [{1}]".format(item['title'], item['artist'], item['album'])
         else:
             content = unicode(item.media_id)
 
