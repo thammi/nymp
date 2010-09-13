@@ -109,10 +109,28 @@ class Player(EventEmitter):
     def stop(self, cb=None):
         self.connection.xmms.playback_stop(value_wrap(cb))
 
-    def forward(self, cb=None):
-        self.connection.xmms.playback_tickle(value_wrap(cb))
+    def _go_rel(self, delta, cb=None):
+        xmms = self.connection.xmms
 
-    # TODO: last()
+        def status_cb(status):
+            if status != self.STATUS_PLAY:
+                self.start(cb)
+            elif cb:
+                cb(status)
+
+        def tickle_cb(value):
+            self.get_status(status_cb)
+
+        def next_cb(value):
+            xmms.playback_tickle(tickle_cb)
+
+        xmms.playlist_set_next_rel(position, next_cb)
+
+    def next(self, cb=None):
+        self._go_rel(1, cb)
+
+    def prev(self, cb=None):
+        self._go_rel(-1, cb)
 
     def set_volume(self, volume):
         self.connection.xmms.volume_set(volume)
