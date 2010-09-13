@@ -111,7 +111,7 @@ class CurPlaylistWalker(urwid.ListWalker):
         playlist.insert(event['newposition'], tmp)
 
         self.modified()
-    
+
     def _change_insert(self, event):
         item = PlaylistItem(event['id'])
         self.playlist.insert(event['position'], item)
@@ -139,11 +139,11 @@ class CurPlaylistWalker(urwid.ListWalker):
 
     def _entries_cb(self, data):
         self.playlist = [PlaylistItem(mid) for mid in data]
-    
+
     def modified(self):
         self._modified()
         update()
-    
+
     def _get_widget(self, pos):
         playlist = self.playlist
         item = playlist[pos]
@@ -168,7 +168,7 @@ class CurPlaylistWalker(urwid.ListWalker):
             content = unicode(item.media_id)
 
         text = SelectableText(content, wrap='clip')
-        
+
         # are we in the spotlight?
         if pos in self.selected:
             return urwid.AttrMap(text, 'selected', 'selected_focus')
@@ -183,7 +183,7 @@ class CurPlaylistWalker(urwid.ListWalker):
             return (self._get_widget(focus), focus)
         else:
             return (None, None)
-    
+
     def get_next(self, pos):
         if pos < len(self.playlist) - 1:
             new_pos = pos + 1
@@ -239,11 +239,51 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         self._modified()
 
+    def move(self, delta):
+        playlist = self.xc.playlist
+        selected = self.selected
+
+        if selected:
+            # move selected items
+
+            if delta < 0:
+                # top down
+                selected.sort()
+
+                # bump?
+                if selected[0] + delta < 0:
+                    return
+            else:
+                # bottom up
+                selected.sort(reverse=True)
+
+                # bump?
+                if selected[0] + delta >= len(self.playlist):
+                    return
+
+            # move each item
+            for i, pos in enumerate(selected):
+                new_pos = pos + delta
+                playlist.move_entry(pos, new_pos, self.cur)
+                selected[i] = new_pos
+        else:
+            # move item in focus
+            focus = self._focus
+            new_focus = focus + delta
+
+            # bump?
+            if new_focus < 0 or new_focus >= len(self.playlist):
+                return
+
+            # movement
+            playlist.move_entry(focus, new_focus, self.cur)
+            self._focus = new_focus
+
     def move_up(self):
-        raise NotImplementedError
+        self.move(-1)
 
     def move_down(self):
-        raise NotImplementedError
+        self.move(1)
 
 class Playlist(ScrollableList):
 
@@ -280,6 +320,8 @@ class Playlist(ScrollableList):
                 ' ': toggle_walk,
                 'meta  ': self.walker.clear_select,
                 'enter': self.walker.goto,
+                'K': self.walker.move_up,
+                'J': self.walker.move_down,
             }
 
         if key in hotkeys:
