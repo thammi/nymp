@@ -18,6 +18,8 @@
 ##
 ##############################################################################
 
+import os
+
 from xmmsclient import XMMS
 from xmmsclient.glib import GLibConnector
 
@@ -35,6 +37,7 @@ class XmmsConnection(EventEmitter):
     DISCONNECT_EVENT = "disconnect"
 
     def __init__(self):
+        """Create an unconnected connection represantation"""
         EventEmitter.__init__(self)
 
         self.connected = False
@@ -60,13 +63,16 @@ class XmmsConnection(EventEmitter):
             try:
                 xmms = self.xmms = XMMS(CLIENT_ID)
 
-                # TODO: use path conventions
-                xmms.connect(disconnect_func=disconnected)
+                path = os.environ.get("XMMS_PATH", None)
+
+                xmms.connect(path, disconnect_func=disconnected)
                 GLibConnector(xmms)
             except IOError:
+                # sad, no connection for you!
                 self.xmms = None
                 self.connected = False
             else:
+                # no exception, we should be connected
                 self.connected = True
                 self.emit(self.CONNECT_EVENT)
 
