@@ -315,14 +315,14 @@ class BrowserWidget(ScrollableList):
         self.coll_tree.request()
 
     def mouse_event(self, size, event, button, col, row, focus):
-        actions = {
-                # left button
-                3: lambda node: node.toggle_exp(),
-                # double click (right)
-                11: lambda node: node.add_to_playlist(),
-            }
+        if event == 'mouse press' and button == 3 or button == 11:
+            actions = {
+                    # left button
+                    3: lambda node: node.toggle_exp(),
+                    # double click (right)
+                    11: lambda node: node.add_to_playlist(),
+                }
 
-        if button == 3 or button == 11:
             # select item under the mouse
             offset, inset = self.get_focus_offset_inset(size)
             self.move_focus(size, row - offset)

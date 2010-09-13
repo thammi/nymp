@@ -96,7 +96,7 @@ class BaseWidget(urwid.Frame):
         # mouse buttons which can trigger a double click
         DOUBLE_CLICKABLE = [1]
 
-        if button in DOUBLE_CLICKABLE:
+        if event == 'mouse press' and  button in DOUBLE_CLICKABLE:
             last = self.last_click
             now = time.time()
 

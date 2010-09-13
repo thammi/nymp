@@ -292,15 +292,16 @@ class Playlist(ScrollableList):
 
         self.walker = walker = CurPlaylistWalker(xc)
         urwid.ListBox.__init__(self, walker)
-    def mouse_event(self, size, event, button, col, row, focus):
-        actions = {
-                # left button
-                3: self.walker.toggle_select,
-                # double click (right)
-                11: self.walker.goto,
-            }
 
-        if button == 3 or button == 11:
+    def mouse_event(self, size, event, button, col, row, focus):
+        if event == 'mouse press' and (button == 3 or button == 11):
+            actions = {
+                    # left button
+                    3: self.walker.toggle_select,
+                    # double click (right)
+                    11: self.walker.goto,
+                }
+
             # select item under the mouse
             offset, inset = self.get_focus_offset_inset(size)
             self.move_focus(size, row - offset)
