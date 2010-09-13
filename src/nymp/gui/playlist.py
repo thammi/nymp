@@ -20,8 +20,8 @@
 
 import urwid
 
-from widgets import SelectableText, ScrollableList
-from update import update
+from nymp.gui.widgets import SelectableText, ScrollableList
+from nymp.gui.update import update
 
 class PlaylistItem:
 

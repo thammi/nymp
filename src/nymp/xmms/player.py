@@ -20,8 +20,9 @@
 
 import xmmsclient
 
-from events import EventEmitter
-from helper import value_wrap
+from nymp.events import EventEmitter
+
+from nymp.xmms.helper import value_wrap
 
 class Player(EventEmitter):
     """Control what is played how"""

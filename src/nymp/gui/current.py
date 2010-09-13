@@ -20,8 +20,9 @@
 
 import urwid
 
-from update import update
-from xmms import reduce_meta
+from nymp.xmms import reduce_meta
+
+from nymp.gui.update import update
 
 class CurrentWidget(urwid.Pile):
 

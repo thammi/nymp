@@ -21,9 +21,9 @@
 import urwid
 import time
 
-from current import CurrentWidget
-from browser import BrowserWidget
-from playlist import Playlist
+from nymp.gui.current import CurrentWidget
+from nymp.gui.browser import BrowserWidget
+from nymp.gui.playlist import Playlist
 
 class MiddleColumns(urwid.Columns):
 

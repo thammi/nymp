@@ -20,8 +20,8 @@
 
 import urwid
 
-from gui import BaseWidget, get_updater
-from xmms import XmmsConnection
+from nymp.gui import BaseWidget, get_updater
+from nymp.xmms import XmmsConnection
 
 # TODO: remove logging :D
 import logging
@@ -89,19 +89,19 @@ def palette_mixer(normal, mono, high):
 
         yield tuple(entry)
 
-xc = XmmsConnection()
-xc.connect()
+def main(args):
+    xc = XmmsConnection()
+    xc.connect()
 
-frame = BaseWidget(xc)
+    frame = BaseWidget(xc)
 
-palette = palette_mixer(normal_palette, mono_palette, high_palette)
-loop = urwid.MainLoop(frame, palette, event_loop=urwid.GLibEventLoop())
+    palette = palette_mixer(normal_palette, mono_palette, high_palette)
+    loop = urwid.MainLoop(frame, palette, event_loop=urwid.GLibEventLoop())
 
-#loop.screen.set_terminal_properties(1)
-loop.screen.set_terminal_properties(256)
+    #loop.screen.set_terminal_properties(1)
+    loop.screen.set_terminal_properties(256)
 
-get_updater().loop = loop
+    get_updater().loop = loop
 
-loop.run()
-
+    loop.run()
 

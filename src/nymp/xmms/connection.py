@@ -22,12 +22,12 @@ import xmmsclient
 from xmmsclient import XMMS
 from xmmsclient.glib import GLibConnector
 
-from events import EventEmitter
+from nymp.events import EventEmitter
 
-from player import Player
-from playlist import Playlist
+from nymp.xmms.player import Player
+from nymp.xmms.playlist import Playlist
 
-from helper import CLIENT_ID
+from nymp.xmms.helper import CLIENT_ID
 
 class XmmsConnection(EventEmitter):
     """Represantation of a XMMS connection. Use the modules (player)."""

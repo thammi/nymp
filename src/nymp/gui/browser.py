@@ -21,9 +21,10 @@
 import urwid
 import xmmsclient.collections as coll
 
-from update import update
-from events import EventEmitter
-from widgets import SelectableText, ScrollableList
+from nymp.events import EventEmitter
+
+from nymp.gui.update import update
+from nymp.gui.widgets import SelectableText, ScrollableList
 
 def _node_cmp_key(item):
     """Calculate the key used to sort nodes, ignores case"""
