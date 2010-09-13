@@ -94,11 +94,11 @@ class Player(EventEmitter):
     def _volume_change(self, value):
         self.emit(self.VOLUME_EVENT, value.value())
 
-    def toggle(self):
+    def toggle(self, cb=None):
         if self._status == self.STATUS_PLAY:
-            self.pause()
+            self.pause(cb)
         else:
-            self.start()
+            self.start(cb)
 
     def pause(self, cb=None):
         self.connection.xmms.playback_pause(value_wrap(cb))
@@ -132,6 +132,9 @@ class Player(EventEmitter):
     def prev(self, cb=None):
         self._go_rel(-1, cb)
 
-    def set_volume(self, volume):
-        self.connection.xmms.volume_set(volume)
+    def set_volume(self, volume, cb=None):
+        self.connection.xmms.volume_set(volume, value_wrap(cb))
+
+    def playtime_signal(self, cb):
+        self.connection.xmms.signal_playback_playtime(value_wrap(cb))
 
