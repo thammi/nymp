@@ -20,6 +20,8 @@
 
 import urwid
 
+from string import Template
+
 from nymp.gui.widgets import SelectableText, ScrollableList
 from nymp.gui.update import update
 
@@ -50,6 +52,7 @@ class PlaylistItem:
 class CurPlaylistWalker(urwid.ListWalker):
 
     PRE_CACHING = 10
+    ITEM_TMPL = Template(u"$album - $title [$artist]")
 
     def __init__(self, xc):
         self.xc = xc
@@ -163,7 +166,7 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         # what should we display?
         if item.meta:
-            content = u"{2} - {0} [{1}]".format(item['title'], item['artist'], item['album'])
+            content = self.ITEM_TMPL.substitute(item)
         else:
             content = unicode(item.media_id)
 
