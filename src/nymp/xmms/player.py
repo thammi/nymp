@@ -124,7 +124,7 @@ class Player(EventEmitter):
         def next_cb(value):
             xmms.playback_tickle(tickle_cb)
 
-        xmms.playlist_set_next_rel(position, next_cb)
+        xmms.playlist_set_next_rel(delta, next_cb)
 
     def next(self, cb=None):
         self._go_rel(1, cb)
