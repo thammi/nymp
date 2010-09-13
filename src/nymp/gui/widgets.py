@@ -70,7 +70,7 @@ class ScrollableList(urwid.ListBox):
         self.change_focus(size, cur_pos)
 
     def move_bottom(self, size):
-        walker = self.walker
+        walker = self.body
         _, cur_pos = walker.get_focus()
 
         # keep walking
@@ -93,7 +93,7 @@ class ScrollableList(urwid.ListBox):
         _, cur_pos = walker.get_focus()
 
         # stepping the desired amount of steps
-        for i in xrange(abs(delta)):
+        for _ in xrange(abs(delta)):
             # up or down
             if delta > 0:
                 _, new_pos = walker.get_next(cur_pos)

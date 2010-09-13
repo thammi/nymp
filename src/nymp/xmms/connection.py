@@ -18,7 +18,6 @@
 ##
 ##############################################################################
 
-import xmmsclient
 from xmmsclient import XMMS
 from xmmsclient.glib import GLibConnector
 
