@@ -87,10 +87,15 @@ class ScrollableList(urwid.ListBox):
 
     def move_focus(self, size, delta):
         walker = self.body
-        offset, inset = self.get_focus_offset_inset(size)
 
         # starting point
         _, cur_pos = walker.get_focus()
+
+        if cur_pos == None:
+            return
+
+        # where is the focus displayed?
+        offset, inset = self.get_focus_offset_inset(size)
 
         # stepping the desired amount of steps
         for _ in xrange(abs(delta)):

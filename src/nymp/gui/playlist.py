@@ -136,6 +136,7 @@ class CurPlaylistWalker(urwid.ListWalker):
         self.modified()
 
     def _position_changed(self, position):
+        # TODO: getting string w/o valid playlist position
         if position['name'] == self.cur:
             self.position = position['position']
             self.modified()
