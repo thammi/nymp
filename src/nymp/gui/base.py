@@ -20,6 +20,7 @@
 
 import urwid
 import time
+import sys
 
 from nymp.gui.current import CurrentWidget
 from nymp.gui.browser import BrowserWidget
@@ -125,6 +126,7 @@ class BaseWidget(urwid.Frame):
                     'h': lambda: self.split.set_focus(0),
                     'l': lambda: self.split.set_focus(2),
                     'C': xc.playlist.clear,
+                    'q': sys.exit,
                     }
 
             if inp in hotkeys:
