@@ -41,8 +41,6 @@ def update():
     loop = get_loop()
 
     def redraw(*args):
-        import logging
-        logging.info(str(args))
         global need_update
 
         if need_update:
@@ -52,5 +50,9 @@ def update():
     loop.set_alarm_in(0, redraw)
 
 def deferred_call(wait, cb, *args):
+    import logging
+    logging.info("wait for %i" % wait)
+    
+    loop = get_loop()
     loop.set_alarm_in(wait, lambda l, a: cb(*args))
 

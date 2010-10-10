@@ -138,3 +138,6 @@ class Player(EventEmitter):
     def playtime_signal(self, cb):
         self.connection.xmms.signal_playback_playtime(value_wrap(cb))
 
+    def get_playtime(self, cb):
+        self.connection.xmms.playback_playtime(value_wrap(cb))
+

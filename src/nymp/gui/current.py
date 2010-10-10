@@ -19,31 +19,64 @@
 ##############################################################################
 
 import urwid
+import time
 
 from nymp.xmms import reduce_meta
 
-from nymp.gui.loop import update
+from nymp.gui.loop import update, deferred_call
 
-class CurrentWidget(urwid.Pile):
+class CurrentWidget(urwid.Columns):
 
     def __init__(self, xc):
-        title = self.title = urwid.Text("", 'right')
-        album = self.album = urwid.Text("", 'right')
-        artist = self.artist = urwid.Text("", 'right')
+        self.duration = 0
 
-        divider = urwid.AttrMap(urwid.Divider(u'\u2500'), 'spacer')
+        meta = self.create_meta()
+        progress = self.create_progress()
 
-        widgets = [urwid.AttrMap(text, 'playing') for text in title, album, artist]
-        widgets.append(divider)
+        urwid.Columns.__init__(self, [progress, ('weight', 0.5, meta)])
 
-        urwid.Pile.__init__(self, widgets)
+        xc.listen(xc.CONNECT_EVENT, self._connect)
 
         player = xc.player
 
         if xc.connected:
             player.get_current(self._update)
+            player.playtime_signal(self._progress)
 
         player.listen(player.CURRENT_EVENT, self._update)
+
+    def create_meta(self):
+        title = self.title = urwid.Text("", 'right')
+        album = self.album = urwid.Text("", 'right')
+        artist = self.artist = urwid.Text("", 'right')
+
+        widgets = [urwid.AttrMap(text, 'playing') for text in title, album, artist]
+
+        return urwid.Pile(widgets)
+
+    def create_progress(self):
+        self.bar = bar = urwid.ProgressBar('pg normal', 'pg complete',
+                done=1, satt='pg smooth')
+
+        col_bar = urwid.Columns([
+            ('fixed', 1, urwid.Text(('pg spacer', '['))),
+            bar,
+            ('fixed', 1, urwid.Text(('pg spacer', ']'))),
+            ])
+
+        return urwid.Pile([urwid.Text(''), col_bar])
+
+    def _connect(self):
+        player.playtime_signal(self._progress)
+
+    def _progress(self, progress):
+        duration = self.duration
+
+        self.progress = progress
+
+        if duration:
+            self.bar.set_completion(float(progress) / duration)
+            update()
 
     def _update(self, meta):
         if meta:
@@ -76,6 +109,8 @@ class CurrentWidget(urwid.Pile):
         self.title.set_text(title)
         self.album.set_text(album)
         self.artist.set_text(artist)
-        
+
+        self.duration = rm['duration']
+ 
         update()
 
