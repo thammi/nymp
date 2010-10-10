@@ -18,31 +18,36 @@
 ##
 ##############################################################################
 
-_updater = None
+_loop = None
+need_update = False
 
-class Updater():
+class NoLoopException(Exception):
+    pass
 
-    def __init__(self):
-        self.loop = None
+def set_loop(loop):
+    global _loop
+    _loop = loop
 
-    def _redraw(self, *args):
-        if self.need_update:
-            self.need_update = False
-            self.loop.draw_screen()
-
-    def update(self):
-        loop = self.loop
-
-        if loop:
-            self.need_update = True
-            loop.set_alarm_in(0, self._redraw)
+def get_loop():
+    if _loop:
+        return _loop
+    else:
+        return NoLoopException
 
 def update():
-    get_updater().update()
+    global need_update
+    need_update = True
 
-def get_updater():
-    global _updater
-    if _updater == None:
-        _updater = Updater()
+    loop = get_loop()
 
-    return _updater
+    def redraw(*args):
+        import logging
+        logging.info(str(args))
+        global need_update
+
+        if need_update:
+            need_update = False
+            loop.draw_screen()
+
+    loop.set_alarm_in(0, redraw)
+

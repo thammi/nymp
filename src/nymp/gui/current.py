@@ -22,7 +22,7 @@ import urwid
 
 from nymp.xmms import reduce_meta
 
-from nymp.gui.update import update
+from nymp.gui.loop import update
 
 class CurrentWidget(urwid.Pile):
 

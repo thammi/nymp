@@ -1,3 +1,2 @@
 from nymp.gui.base import BaseWidget
-from nymp.gui.update import get_updater
-
+from nymp.gui.loop import set_loop

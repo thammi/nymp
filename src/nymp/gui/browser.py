@@ -23,7 +23,7 @@ import xmmsclient.collections as coll
 
 from nymp.events import EventEmitter
 
-from nymp.gui.update import update
+from nymp.gui.loop import update
 from nymp.gui.widgets import SelectableText, ScrollableList
 
 def _node_cmp_key(item):

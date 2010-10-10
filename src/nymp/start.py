@@ -20,7 +20,7 @@
 
 import urwid
 
-from nymp.gui import BaseWidget, get_updater
+from nymp.gui import BaseWidget, set_loop
 from nymp.xmms import XmmsConnection
 
 # TODO: remove logging :D
@@ -101,7 +101,7 @@ def main(args):
     #loop.screen.set_terminal_properties(1)
     loop.screen.set_terminal_properties(256)
 
-    get_updater().loop = loop
+    set_loop(loop)
 
     loop.run()
 
