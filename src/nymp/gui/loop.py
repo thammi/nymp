@@ -51,3 +51,6 @@ def update():
 
     loop.set_alarm_in(0, redraw)
 
+def deferred_call(wait, cb, *args):
+    loop.set_alarm_in(wait, lambda l, a: cb(*args))
+
