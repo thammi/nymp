@@ -20,7 +20,7 @@
 
 import urwid
 
-from nymp.gui import BaseWidget, get_updater
+from nymp.gui import BaseWidget, set_loop
 from nymp.xmms import XmmsConnection
 
 # TODO: remove logging :D
@@ -30,7 +30,20 @@ rl = logging.getLogger()
 rl.addHandler(h)
 rl.setLevel(logging.DEBUG)
 
-normal_palette = {
+def palette_adjust(palette):
+    if 'progress' in palette:
+        # adding progress values
+        progress = palette['progress']
+        back = palette['status'][1]
+
+        palette['pg normal'] = (progress[1], back)
+        palette['pg complete'] = (progress[0], progress[1])
+        palette['pg smooth'] = (progress[1], back)
+        palette['pg spacer'] = (progress[1], back)
+
+    return palette
+
+normal_palette = palette_adjust({
         'normal': ('default', 'default'),
         'focus': ('black', 'light gray'),
         'current': ('dark green', 'default'),
@@ -40,9 +53,10 @@ normal_palette = {
         'playing': ('dark green', 'default'),
         'selected': ('yellow', 'default'),
         'selected_focus': ('yellow', 'dark gray'),
-        }
+        'progress': ('default', 'dark gray')
+        })
 
-high_palette = {
+high_palette = palette_adjust({
         'normal': ('#FFF', '#000'),
         'focus': ('#000', '#666'),
         'current': ('#393', '#000'),
@@ -52,7 +66,8 @@ high_palette = {
         'playing': ('#393', '#000'),
         'selected': ('#FF0', '#000'),
         'selected_focus': ('#FF0', '#666'),
-        }
+        'progress': ('#000', '#999'),
+        })
 
 mono_palette = {
         'focus': 'standout',
@@ -101,7 +116,7 @@ def main(args):
     #loop.screen.set_terminal_properties(1)
     loop.screen.set_terminal_properties(256)
 
-    get_updater().loop = loop
+    set_loop(loop)
 
     loop.run()
 

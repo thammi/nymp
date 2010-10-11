@@ -65,12 +65,14 @@ class BaseWidget(urwid.Frame):
 
         # spacer
         hor_space = urwid.AttrMap(urwid.SolidFill(u'\u2502'), 'spacer')
+        vert_space = urwid.AttrMap(urwid.Divider(u'\u2500'), 'spacer')
 
         # program status
         status = urwid.AttrMap(urwid.Text("... i am a status bar ... someday ..."), 'status')
 
         # current media status
         current = CurrentWidget(xc)
+        current_pile = urwid.Pile([current, vert_space])
 
         # media browser
         browser = BrowserWidget(xc)
@@ -81,7 +83,7 @@ class BaseWidget(urwid.Frame):
         widgets = [('weight', 0.6, browser), ('fixed', 1, hor_space), playlist]
         self.split = split = MiddleColumns(widgets, focus_column=2, dividechars=1)
 
-        urwid.Frame.__init__(self, split, current, status)
+        urwid.Frame.__init__(self, split, current_pile, status)
     
     def focus_swap(self):
         split = self.split

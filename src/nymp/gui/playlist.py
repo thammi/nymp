@@ -23,7 +23,7 @@ import urwid
 from string import Template
 
 from nymp.gui.widgets import SelectableText, ScrollableList
-from nymp.gui.update import update
+from nymp.gui.loop import update
 
 class PlaylistItem:
 
