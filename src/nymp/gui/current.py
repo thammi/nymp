@@ -24,6 +24,16 @@ import time
 from nymp.xmms import reduce_meta
 
 from nymp.gui.loop import update, deferred_call
+from nymp.gui.widgets import TextProgress
+
+def usec_format(usec):
+    sec = usec / 1000
+    return "%02i:%02i" % (sec / 60, sec % 60)
+
+class CurrentProgress(TextProgress):
+
+    def text(self):
+        return "%s / %s" % (usec_format(self.current), usec_format(self.done))
 
 class CurrentWidget(urwid.Columns):
 
@@ -31,9 +41,9 @@ class CurrentWidget(urwid.Columns):
         self.duration = 0
 
         meta = self.create_meta()
-        progress = self.create_progress()
+        bar = self.create_progress()
 
-        urwid.Columns.__init__(self, [progress, ('weight', 0.5, meta)])
+        urwid.Columns.__init__(self, [bar, ('weight', 0.5, meta)])
 
         xc.listen(xc.CONNECT_EVENT, self._connect)
 
@@ -55,13 +65,12 @@ class CurrentWidget(urwid.Columns):
         return urwid.Pile(widgets)
 
     def create_progress(self):
-        self.bar = bar = urwid.ProgressBar('pg normal', 'pg complete',
-                done=1, satt='pg smooth')
+        self.bar = bar = CurrentProgress('pg normal', 'pg complete', done=1, satt='pg smooth')
 
         col_bar = urwid.Columns([
-            ('fixed', 1, urwid.Text(('pg spacer', '['))),
+            ('fixed', 2, urwid.Text(('pg spacer', ' ['))),
             bar,
-            ('fixed', 1, urwid.Text(('pg spacer', ']'))),
+            ('fixed', 2, urwid.Text(('pg spacer', '] '))),
             ])
 
         return urwid.Pile([urwid.Text(''), col_bar])
@@ -70,13 +79,8 @@ class CurrentWidget(urwid.Columns):
         player.playtime_signal(self._progress)
 
     def _progress(self, progress):
-        duration = self.duration
-
-        self.progress = progress
-
-        if duration:
-            self.bar.set_completion(float(progress) / duration)
-            update()
+        self.bar.set_completion(progress)
+        update()
 
     def _update(self, meta):
         if meta:
@@ -110,7 +114,7 @@ class CurrentWidget(urwid.Columns):
         self.album.set_text(album)
         self.artist.set_text(artist)
 
-        self.duration = rm['duration']
+        self.bar.set_done(rm['duration'] if 'duration' in rm else 0)
  
         update()
 
