@@ -127,3 +127,51 @@ class SelectableText(urwid.Text):
     def keypress(self, size, key):
         return key
 
+class TextProgress(urwid.FlowWidget):
+
+    def __init__(self, normal, complete, current=0, done=100, satt=None):
+        self.normal = normal
+        self.complete = complete
+        self.current = current
+        self.done = done
+        self.satt = satt
+
+    def text(self):
+        return "%s / %s" % (str(self.current), str(self.done))
+
+    def set_completion(self, value):
+        self.current = value
+        self._invalidate()
+
+    def set_done(self, value):
+        self.done = value
+        self._invalidate()
+
+    def rows(self, size, focus=False):
+        return 1
+
+    def render(self, size, focus=False):
+        (width,) = size
+
+        current = self.current
+        done = self.done
+
+        normal = self.normal
+        complete = self.complete
+        satt = self.satt
+
+        txt = urwid.Text(self.text(), 'center', 'clip')
+        canvas = txt.render(size)
+
+        progress = current * width / done if done else 0
+        prog_i = int(progress)
+
+        if progress <= 0:
+            canvas._attr = [[(normal, width)]]
+        elif progress >= width:
+            canvas._attr = [[(complete, width)]]
+        else:
+            canvas._attr = [[(complete, prog_i), (normal, width - prog_i)]]
+
+        return canvas
+
