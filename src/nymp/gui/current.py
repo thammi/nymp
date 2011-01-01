@@ -39,6 +39,7 @@ class CurrentWidget(urwid.Columns):
 
     def __init__(self, xc):
         self.duration = 0
+        self.xc = xc
 
         meta = self.create_meta()
         bar = self.create_progress()
@@ -50,8 +51,7 @@ class CurrentWidget(urwid.Columns):
         player = xc.player
 
         if xc.connected:
-            player.get_current(self._update)
-            player.playtime_signal(self._progress)
+            self._connect()
 
         player.listen(player.CURRENT_EVENT, self._update)
 
@@ -65,7 +65,8 @@ class CurrentWidget(urwid.Columns):
         return urwid.Pile(widgets)
 
     def create_progress(self):
-        self.bar = bar = CurrentProgress('pg normal', 'pg complete', done=1, satt='pg smooth')
+        # TODO: make partial symbol rendering configurable
+        self.bar = bar = CurrentProgress('pg normal', 'pg complete', done=0, satt='pg smooth')
 
         col_bar = urwid.Columns([
             ('fixed', 2, urwid.Text(('pg spacer', ' ['))),
@@ -76,6 +77,9 @@ class CurrentWidget(urwid.Columns):
         return urwid.Pile([urwid.Text(''), col_bar])
 
     def _connect(self):
+        player = self.xc.player
+        player.get_current(self._update)
+        player.get_playtime(self._progress)
         player.playtime_signal(self._progress)
 
     def _progress(self, progress):
@@ -87,7 +91,7 @@ class CurrentWidget(urwid.Columns):
             rm = reduce_meta(meta)
         else:
             rm = {}
-            
+ 
         if 'title' in rm:
             if 'tracknr' in rm:
                 # use title and track number
