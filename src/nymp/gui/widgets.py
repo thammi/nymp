@@ -136,6 +136,8 @@ class TextProgress(urwid.FlowWidget):
         self.done = done
         self.satt = satt
 
+        self.eighths = [' '] + map(unichr, range(0x258f, 0x2589 - 1, -1))
+
     def text(self):
         return "%s / %s" % (str(self.current), str(self.done))
 
@@ -163,13 +165,41 @@ class TextProgress(urwid.FlowWidget):
         txt = urwid.Text(self.text(), 'center', 'clip')
         canvas = txt.render(size)
 
-        progress = current * width / done if done else 0
+        progress = float(current) * width / done if done else 0
         prog_i = int(progress)
 
         if progress <= 0:
             canvas._attr = [[(normal, width)]]
         elif progress >= width:
             canvas._attr = [[(complete, width)]]
+        elif satt and canvas._text[0][prog_i] == ' ':
+            # find partial symbol
+            part = self.eighths[int(progress % 1 * 8)].encode('utf-8')
+
+            # replace the space
+            raw = canvas._text[0]
+            canvas._text[0] = raw[:prog_i] + part + raw[prog_i+1:]
+
+            # gather attribute data
+            attr = []
+
+            # completed part if it exists
+            if prog_i:
+                attr.append((complete, prog_i))
+
+            # the partial symbol
+            attr.append((satt, len(part)))
+
+            # normal part if it exists
+            normal_size = width-prog_i-1
+            if prog_i < normal_size:
+                attr.append((normal, normal_size))
+
+            # set the attributes
+            canvas._attr = [attr]
+
+            # adjust new length
+            canvas._cs = [[(None, len(canvas._text[0]))]]
         else:
             canvas._attr = [[(complete, prog_i), (normal, width - prog_i)]]
 
