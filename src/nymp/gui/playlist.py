@@ -333,7 +333,7 @@ class Playlist(ScrollableList):
             commands[command]()
             return True
         else:
-            return False
+            return ScrollableList.command(self, size, command, args)
 
     def move_top(self, size):
         # moving up without iterating

@@ -1,8 +1,12 @@
 commands = {
         # common
         'activate': ['enter'],
-        'nav_up': ['k', 'up'],
-        'nav_down': ['j', 'down'],
+        'nav_up': ['up', 'k'],
+        'nav_page_up': ['page up'],
+        'nav_down': ['down', 'j'],
+        'nav_page_down': ['page down'],
+        'nav_top': ['home'],
+        'nav_bottom': ['end'],
         # global
         'col_swap': ['tab'],
         'col_left': ['h'],

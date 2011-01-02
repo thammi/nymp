@@ -175,7 +175,7 @@ class BaseWidget(urwid.Frame):
                 focus = self.split.get_focus()
 
                 if hasattr(focus, 'command'):
-                    return focus.command(size, command, [])
+                    return focus.command(size, command, args)
                 else:
                     return False
 

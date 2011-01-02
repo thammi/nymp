@@ -364,5 +364,5 @@ class BrowserWidget(ScrollableList):
 
             return True
         else:
-            return False
+            return ScrollableList.command(self, size, command, args)
 
