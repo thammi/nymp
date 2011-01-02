@@ -191,8 +191,8 @@ class TextProgress(urwid.FlowWidget):
             attr.append((satt, len(part)))
 
             # normal part if it exists
-            normal_size = width-prog_i-1
-            if prog_i < normal_size:
+            normal_size = width - prog_i - 1
+            if normal_size > 0:
                 attr.append((normal, normal_size))
 
             # set the attributes
