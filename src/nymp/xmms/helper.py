@@ -20,6 +20,7 @@
 
 from xmmsclient import userconfdir_get
 from os.path import join
+import logging
 
 CLIENT_ID = 'nymp'
 
@@ -33,7 +34,8 @@ def reduce_meta(meta):
 
 def value_wrap(cb):
     if cb:
-        return lambda value: cb(value.value())
+        try: return lambda value: cb(value.value())
+        except: logging.exception("Exception in callback")
     else:
         return None
 
