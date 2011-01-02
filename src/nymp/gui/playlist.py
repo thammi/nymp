@@ -315,24 +315,25 @@ class Playlist(ScrollableList):
             ScrollableList.mouse_event(self, size, event, button, col, row, focus)
 
 
-    def keypress(self, size, key):
+    def command(self, size, command, args):
         def toggle_walk():
             self.walker.toggle_select()
             self.move_focus(size, 1)
 
-        hotkeys = {
-                'd': self.walker.delete_entry,
-                ' ': toggle_walk,
-                'meta  ': self.walker.clear_select,
-                'enter': self.walker.goto,
-                'K': self.walker.move_up,
-                'J': self.walker.move_down,
+        commands = {
+                'delete': self.walker.delete_entry,
+                'mark': toggle_walk,
+                'reset_mark': self.walker.clear_select,
+                'activate': self.walker.goto,
+                'move_up': self.walker.move_up,
+                'move_down': self.walker.move_down,
             }
 
-        if key in hotkeys:
-            hotkeys[key]()
+        if command in commands:
+            commands[command]()
+            return True
         else:
-            return ScrollableList.keypress(self, size, key)
+            return False
 
     def move_top(self, size):
         # moving up without iterating

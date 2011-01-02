@@ -361,6 +361,8 @@ class BrowserWidget(ScrollableList):
         if command in commands:
             if self.walker.focus_node():
                 commands[command]()
+
+            return True
         else:
-            return ScrollableList.keypress(self, size, key)
+            return False
 
