@@ -19,11 +19,11 @@ and outdatet) list of planned additional features.
 
 ## Usage
 
-Use `launch.py` in ./src/ to start the program. You can also add a link to it in
+Use `launch.py` in `./src/` to start the program. You can also add a link to it in
 your `bin` directory.
 
 The key bindings are subject to change in the near future. They are loosely
-vim-oriented.
+vim-oriented. Configuration and a command line will be implemented later.
 
 Incomplete overview:
 
