@@ -39,3 +39,21 @@ Incomplete overview:
 
 You can use the mouse, too.
 
+## Todo and ideas
+
+- second xmms connection for heavy operations (library ...)
+- playlist update (sort, shuffle, update)
+- library update
+- status bar
+- library browser root?
+  - collections
+    - collection management?
+  - search?
+- search
+  - find and/or filter?
+- adding a command line?
+  - hotkeys -> commands?
+  - auto completion
+- playlists
+- playback status
+
