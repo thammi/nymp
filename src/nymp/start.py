@@ -21,6 +21,7 @@
 import urwid
 
 import sys
+import os
 
 from nymp.gui import BaseWidget, set_loop
 from nymp.xmms import XmmsConnection
@@ -112,8 +113,13 @@ def main(args):
 
     # try to connect
     if not xc.connect():
-        print "Couldn't connect to the xmms2 server. You might want to start one ;)"
-        sys.exit(1)
+        # TODO: make configurable
+        os.system("xmms2-launcher")
+
+        if not xc.connect():
+            print "Couldn't connect to the xmms2 server."
+            print "You might want to start one ;)"
+            sys.exit(1)
 
     frame = BaseWidget(xc)
 
