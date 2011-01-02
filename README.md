@@ -26,6 +26,7 @@ Incomplete overview:
 * enter - collapse tree node/jump to playlist item
 * space - mark/unmark item
 * alt+space - unmark all
+* 9/0 - change volume
 
 You can use the mouse, too.
 

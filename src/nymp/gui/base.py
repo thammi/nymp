@@ -120,6 +120,18 @@ class BaseWidget(urwid.Frame):
         if urwid.Frame.keypress(self, size, inp):
             xc = self.xc
 
+            # TODO: move somewhere else
+            def rel_volume(diff):
+                player = xc.player
+
+                def set_volume(cur):
+                    new = {}
+
+                    for c in cur:
+                        player.set_volume(c, diff + cur[c])
+
+                player.get_volume(set_volume)
+
             hotkeys = {
                     'p': xc.player.toggle,
                     'n': xc.player.next,
@@ -129,6 +141,8 @@ class BaseWidget(urwid.Frame):
                     'l': lambda: self.split.set_focus(2),
                     'C': xc.playlist.clear,
                     'q': sys.exit,
+                    '0': lambda: rel_volume(2),
+                    '9': lambda: rel_volume(-2),
                     }
 
             if inp in hotkeys:

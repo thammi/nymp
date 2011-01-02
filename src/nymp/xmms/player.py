@@ -132,8 +132,11 @@ class Player(EventEmitter):
     def prev(self, cb=None):
         self._go_rel(-1, cb)
 
-    def set_volume(self, volume, cb=None):
-        self.connection.xmms.volume_set(volume, value_wrap(cb))
+    def set_volume(self, name, volume, cb=None):
+        self.connection.xmms.playback_volume_set(name, volume, value_wrap(cb))
+
+    def get_volume(self, cb):
+        self.connection.xmms.playback_volume_get(value_wrap(cb))
 
     def playtime_signal(self, cb):
         self.connection.xmms.signal_playback_playtime(value_wrap(cb))
