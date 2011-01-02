@@ -26,6 +26,7 @@ import logging
 from nymp.gui.current import CurrentWidget
 from nymp.gui.browser import BrowserWidget
 from nymp.gui.playlist import Playlist
+from nymp.gui.status import StatusBar
 
 from nymp.gui.commands import commands
 
@@ -71,7 +72,7 @@ class BaseWidget(urwid.Frame):
         vert_space = urwid.AttrMap(urwid.Divider(u'\u2500'), 'spacer')
 
         # program status
-        status = urwid.AttrMap(urwid.Text("... i am a status bar ... someday ..."), 'status')
+        status = urwid.AttrMap(StatusBar(), 'status')
 
         # current media status
         current = CurrentWidget(xc)

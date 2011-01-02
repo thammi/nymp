@@ -18,38 +18,42 @@
 ##
 ##############################################################################
 
-_loop = None
-need_update = False
+import urwid
 
-class NoLoopException(Exception):
-    pass
+import logging
 
-def set_loop(loop):
-    global _loop
-    _loop = loop
+from nymp.gui.loop import deferred_call
 
-def get_loop():
-    if _loop:
-        return _loop
-    else:
-        raise NoLoopException()
+class FunLogHandler(logging.Handler):
 
-def update():
-    global need_update
-    need_update = True
+    def __init__(self, out_fun):
+        logging.Handler.__init__(self)
 
-    loop = get_loop()
+        self.out_fun = out_fun
 
-    def redraw(*args):
-        global need_update
+    def emit(self, record):
+        self.out_fun(record.msg)
 
-        if need_update:
-            need_update = False
-            loop.draw_screen()
+class StatusBar(urwid.Edit):
 
-    loop.set_alarm_in(0, redraw)
+    def __init__(self):
+        urwid.Edit.__init__(self)
 
-def deferred_call(wait, cb, *args):
-    loop = get_loop()
-    loop.set_alarm_in(wait, lambda l, a: cb(*args))
+        self.msg_id = 0
+
+        handler = FunLogHandler(self.flash)
+        handler.setLevel(logging.DEBUG)
+
+        logger = logging.getLogger()
+        logger.addHandler(handler)
+
+    def flash(self, msg):
+        self.msg_id += 1
+        deferred_call(2, self.withdraw, self.msg_id)
+
+        self.set_edit_text(msg)
+
+    def withdraw(self, old_id):
+        if old_id == self.msg_id:
+            self.set_edit_text("")
 
