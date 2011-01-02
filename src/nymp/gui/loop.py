@@ -32,7 +32,7 @@ def get_loop():
     if _loop:
         return _loop
     else:
-        return NoLoopException
+        raise NoLoopException()
 
 def update():
     global need_update
