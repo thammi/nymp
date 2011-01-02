@@ -170,6 +170,7 @@ class BaseWidget(urwid.Frame):
 
             if command in commands:
                 commands[command]()
+                return True
             else:
                 # command
                 focus = self.split.get_focus()
