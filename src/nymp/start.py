@@ -24,6 +24,7 @@ import sys
 
 from nymp.gui import BaseWidget, set_loop
 from nymp.xmms import XmmsConnection
+from nymp.gui.loop import deferred_call
 
 # TODO: remove logging :D
 import logging
@@ -123,6 +124,16 @@ def main(args):
     loop.screen.set_terminal_properties(256)
 
     set_loop(loop)
+
+    def disconnected():
+        def bye():
+            loop.screen.stop()
+            print "xmms2 server connection lost."
+            sys.exit(2)
+
+        deferred_call(0, bye)
+
+    xc.listen(xc.DISCONNECT_EVENT, disconnected)
 
     loop.run()
 
