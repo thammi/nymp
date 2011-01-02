@@ -333,7 +333,7 @@ class BrowserWidget(ScrollableList):
         else:
             ScrollableList.mouse_event(self, size, event, button, col, row, focus)
 
-    def keypress(self, size, key):
+    def command(self, size, command, args):
         def deep_fold():
             walker = self.walker
             node = walker.focus_node()
@@ -351,16 +351,16 @@ class BrowserWidget(ScrollableList):
                     # TODO: tell the user?
                     pass
 
-        hotkeys = {
-                'enter': self.walker.focus_node().toggle_exp,
-                'right': self.walker.focus_node().expand,
-                'left': deep_fold,
-                'a': self.walker.focus_node().add_to_playlist,
+        commands = {
+                'activate': self.walker.focus_node().toggle_exp,
+                'expand': self.walker.focus_node().expand,
+                'fold': deep_fold,
+                'add': self.walker.focus_node().add_to_playlist,
             }
 
-        if key in hotkeys:
+        if command in commands:
             if self.walker.focus_node():
-                hotkeys[key]()
+                commands[command]()
         else:
             return ScrollableList.keypress(self, size, key)
 
