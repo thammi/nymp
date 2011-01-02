@@ -173,10 +173,21 @@ class BaseWidget(urwid.Frame):
                 return True
             else:
                 # command
-                focus = self.split.get_focus()
+                split = self.split
+
+                # get the focused widget
+                focus = split.get_focus()
 
                 if hasattr(focus, 'command'):
-                    return focus.command(size, command, args)
+                    # calculate width of the widget
+                    focus_i = split.get_focus_column()
+                    width = split.column_widths(size)[focus_i]
+
+                    # calculate height of the widget
+                    (head_height, foot_height), _ = self.frame_top_bottom(size, 'body')
+                    height = size[1] - head_height - foot_height
+
+                    return focus.command((width, height), command, args)
                 else:
                     return False
 
