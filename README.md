@@ -57,4 +57,5 @@ You can use the mouse, too.
   - auto completion
 - playlists
 - playback status
+- option to start xmms2 if unable to connect at startup
 
