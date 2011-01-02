@@ -20,6 +20,8 @@
 
 import urwid
 
+import sys
+
 from nymp.gui import BaseWidget, set_loop
 from nymp.xmms import XmmsConnection
 
@@ -106,7 +108,11 @@ def palette_mixer(normal, mono, high):
 
 def main(args):
     xc = XmmsConnection()
-    xc.connect()
+
+    # try to connect
+    if not xc.connect():
+        print "Couldn't connect to the xmms2 server. You might want to start one ;)"
+        sys.exit(1)
 
     frame = BaseWidget(xc)
 
