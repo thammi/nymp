@@ -45,6 +45,7 @@ You can use the mouse, too.
 - playlist update (sort, shuffle, update)
 - library update
 - status bar
+    - use logging infrastructure?
 - library browser root?
   - collections
     - collection management?

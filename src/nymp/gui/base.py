@@ -21,10 +21,13 @@
 import urwid
 import time
 import sys
+import logging
 
 from nymp.gui.current import CurrentWidget
 from nymp.gui.browser import BrowserWidget
 from nymp.gui.playlist import Playlist
+
+from nymp.gui.commands import commands
 
 class MiddleColumns(urwid.Columns):
 
@@ -84,7 +87,16 @@ class BaseWidget(urwid.Frame):
         self.split = split = MiddleColumns(widgets, focus_column=2, dividechars=1)
 
         urwid.Frame.__init__(self, split, current_pile, status)
-    
+
+        self.init_commands()
+
+    def init_commands(self):
+        self.hotkeys = hotkeys = {}
+
+        for command, bindings in commands.items():
+            for binding in bindings:
+                hotkeys[binding] = command
+
     def focus_swap(self):
         split = self.split
         split.set_focus(0 if split.get_focus_column() else 2)
@@ -118,6 +130,17 @@ class BaseWidget(urwid.Frame):
 
     def keypress(self, size, inp):
         if urwid.Frame.keypress(self, size, inp):
+            hotkeys = self.hotkeys
+
+            if inp in hotkeys:
+                command = hotkeys[inp]
+
+                if not self.command(size, command, []):
+                    logging.info("The command '%s' did not apply" % command)
+            else:
+                logging.info("No key binding for '%s' found" % inp)
+
+    def command(self, size, command, args):
             xc = self.xc
 
             # TODO: move somewhere else
@@ -132,21 +155,27 @@ class BaseWidget(urwid.Frame):
 
                 player.get_volume(set_volume)
 
-            hotkeys = {
-                    'p': xc.player.toggle,
-                    'n': xc.player.next,
-                    'b': xc.player.prev,
-                    'tab': self.focus_swap,
-                    'h': lambda: self.split.set_focus(0),
-                    'l': lambda: self.split.set_focus(2),
-                    'C': xc.playlist.clear,
-                    'q': sys.exit,
-                    '0': lambda: rel_volume(2),
-                    '9': lambda: rel_volume(-2),
+            commands = {
+                    'play': xc.player.toggle,
+                    'next': xc.player.next,
+                    'prev': xc.player.prev,
+                    'col_swap': self.focus_swap,
+                    'col_left': lambda: self.split.set_focus(0),
+                    'col_right': lambda: self.split.set_focus(2),
+                    'clear': xc.playlist.clear,
+                    'quit': sys.exit,
+                    'vol_up': lambda: rel_volume(2),
+                    'vol_down': lambda: rel_volume(-2),
                     }
 
-            if inp in hotkeys:
-                hotkeys[inp]()
+            if command in commands:
+                commands[command]()
             else:
-                return inp
+                # command
+                focus = self.split.get_focus()
+
+                if hasattr(focus, 'command'):
+                    return focus.command(command, [])
+                else:
+                    return False
 
