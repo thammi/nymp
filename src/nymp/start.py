@@ -118,7 +118,6 @@ def main(args):
 
         if not xc.connect():
             print "Couldn't connect to the xmms2 server."
-            print "You might want to start one ;)"
             sys.exit(1)
 
     frame = BaseWidget(xc)

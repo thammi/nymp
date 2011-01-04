@@ -22,7 +22,7 @@ import urwid
 
 import logging
 
-from nymp.gui.loop import deferred_call
+from nymp.gui.loop import deferred_call, update
 
 class FunLogHandler(logging.Handler):
 
@@ -52,8 +52,10 @@ class StatusBar(urwid.Edit):
         deferred_call(2, self.withdraw, self.msg_id)
 
         self.set_edit_text(msg)
+        update()
 
     def withdraw(self, old_id):
         if old_id == self.msg_id:
             self.set_edit_text("")
+            update()
 
