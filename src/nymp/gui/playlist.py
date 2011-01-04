@@ -20,6 +20,8 @@
 
 import urwid
 
+import logging
+
 from string import Template
 
 from nymp.gui.widgets import SelectableText, ScrollableList
@@ -88,6 +90,9 @@ class CurPlaylistWalker(urwid.ListWalker):
         self.xc.playlist.list_entries(name, self._entries_cb)
         self.xc.playlist.position(name, self._position_changed)
 
+        # tell the user
+        logging.info("Playlist '%s' loaded" % name)
+
     def _playlist_changed(self, event):
         pl = self.xc.playlist
 
@@ -115,11 +120,15 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         self.modified()
 
+        logging.info("Playlist items were moved")
+
     def _change_insert(self, event):
         item = PlaylistItem(event['id'])
         self.playlist.insert(event['position'], item)
 
         self.modified()
+
+        logging.info("Playlist items added")
 
     def _change_remove(self, event):
         position = event['position']
@@ -130,10 +139,14 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         self.modified()
 
+        logging.info("Playlist items were removed")
+
     def _change_clear(self, event):
         self._focus = 0
         self.playlist = []
         self.modified()
+
+        logging.info("The playlist was cleared")
 
     def _position_changed(self, position):
         # TODO: getting string w/o valid playlist position
