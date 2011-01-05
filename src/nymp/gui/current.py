@@ -76,15 +76,24 @@ class CurrentWidget(urwid.Columns):
 
         return urwid.Pile([urwid.Text(''), col_bar])
 
+    def request_playtime_signal(self):
+        self.xc.player.playtime_signal(self._progress)
+
     def _connect(self):
         player = self.xc.player
         player.get_current(self._update)
         player.get_playtime(self._progress)
-        player.playtime_signal(self._progress)
 
     def _progress(self, progress):
+        # handle the progress
         self.bar.set_completion(progress)
         update()
+
+        # request next signal later
+        deferred_call(0.25, self.request_playtime_signal)
+
+        # don't get next signal immediately
+        return False
 
     def _update(self, meta):
         if meta:
