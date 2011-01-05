@@ -27,12 +27,13 @@ commands = {
         'nav_page_down': ['page down'],
         'nav_top': ['home'],
         'nav_bottom': ['end'],
+        'yank': ['y'],
         # global
         'col_swap': ['tab'],
         'col_left': ['h'],
         'col_right': ['l'],
         'clear': ['C'],
-        'play': ['p'],
+        'play': ['x'],
         'stop': ['c'],
         'next': ['n'],
         'prev': ['b'],
@@ -49,5 +50,6 @@ commands = {
         'reset_mark': ['meta  '],
         'move_up': ['K'],
         'move_down': ['J'],
+        'paste': ['p'],
         }
 
