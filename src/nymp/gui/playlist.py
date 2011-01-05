@@ -26,6 +26,7 @@ from string import Template
 
 from nymp.gui.widgets import SelectableText, ScrollableList
 from nymp.gui.loop import update
+from nymp.gui.buffer import put_buffer, get_buffer
 
 class PlaylistItem:
 
@@ -120,7 +121,7 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         self.modified()
 
-        logging.info("Playlist items were moved")
+        #logging.info("Playlist items were moved")
 
     def _change_insert(self, event):
         item = PlaylistItem(event['id'])
@@ -128,7 +129,7 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         self.modified()
 
-        logging.info("Playlist items added")
+        #logging.info("Playlist items added")
 
     def _change_remove(self, event):
         position = event['position']
@@ -139,7 +140,7 @@ class CurPlaylistWalker(urwid.ListWalker):
 
         self.modified()
 
-        logging.info("Playlist items were removed")
+        #logging.info("Playlist items were removed")
 
     def _change_clear(self, event):
         self._focus = 0
@@ -224,20 +225,45 @@ class CurPlaylistWalker(urwid.ListWalker):
     def goto(self):
         self.xc.playlist.goto(self._focus)
 
+    def insert_buffer(self, delta=1):
+        buf = get_buffer()
+        focus = self._focus
+
+        if buf == None:
+            # nothing to do ...
+            logging.warning("Unable to paste empty buffer")
+        elif isinstance(buf, list):
+            playlist = self.xc.playlist
+            for media_id in reversed(buf):
+                playlist.insert_id(focus + delta, media_id)
+            logging.info("Pasted %i items from the buffer" % len(buf))
+        else:
+            self.xc.playlist.insert_collection(focus + delta, buf)
+            logging.info("Pasted a collection from the buffer")
+
     def delete_entry(self):
         if self.playlist:
-            pl = self.xc.playlist
+            playlist = self.playlist
             selected = self.selected
+
+            pl = self.xc.playlist
 
             if selected:
                 # remove all selected
-                for i in sorted(selected, reverse=True):
+                selected.sort()
+
+                selected_ids = [playlist[i].media_id for i in selected]
+                put_buffer(selected_ids)
+
+                for i in reversed(selected):
                     pl.remove_entry(i, self.cur)
 
                 self.clear_select()
             else:
                 # remove item in focus
-                pl.remove_entry(self._focus, self.cur)
+                focus = self._focus
+                put_buffer([playlist[focus].media_id])
+                pl.remove_entry(focus, self.cur)
 
     def toggle_select(self):
         focus = self._focus
@@ -340,6 +366,7 @@ class Playlist(ScrollableList):
                 'activate': self.walker.goto,
                 'move_up': self.walker.move_up,
                 'move_down': self.walker.move_down,
+                'paste': self.walker.insert_buffer,
             }
 
         if command in commands:

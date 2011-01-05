@@ -19,6 +19,7 @@
 ##############################################################################
 
 import urwid
+
 import xmmsclient.collections as coll
 
 from nymp.events import EventEmitter
