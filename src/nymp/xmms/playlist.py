@@ -58,6 +58,18 @@ class Playlist(EventEmitter):
         xmms = self.connection.xmms
         xmms.playlist_add_collection(coll, order, playlist, value_wrap(cb))
 
+    def add_id(self, media_id, playlist=None, cb=None):
+        xmms = self.connection.xmms
+        xmms.playlist_add_id(media_id, playlist, value_wrap(cb))
+
+    def insert_collection(self, pos, coll, order, playlist=None, cb=None):
+        xmms = self.connection.xmms
+        xmms.playlist_insert_collection(pos, coll, order, playlist, value_wrap(cb))
+
+    def insert_id(self, pos, media_id, playlist=None, cb=None):
+        xmms = self.connection.xmms
+        xmms.playlist_insert_id(pos, media_id, playlist, value_wrap(cb))
+
     def clear(self, playlist=None, cb=None):
         xmms = self.connection.xmms
         xmms.playlist_clear(playlist, value_wrap(cb))
