@@ -13,6 +13,7 @@ and outdatet) list of planned additional features.
 
 ## Dependencies
 
+* XMMS2
 * Python 2.X (developed with Python 2.6, tested on Python 2.5)
 * urwid (python-urwid in Debian)
 * Python bindings for XMMS2 (python-xmmsclient in Debian)
@@ -44,8 +45,6 @@ You can use the mouse, too.
 - second xmms connection for heavy operations (library ...)
 - playlist update (sort, shuffle, update)
 - library update
-- status bar
-    - use logging infrastructure?
 - library browser root?
   - collections
     - collection management?
@@ -57,5 +56,4 @@ You can use the mouse, too.
   - auto completion
 - playlists
 - playback status
-- option to start xmms2 if unable to connect at startup
 
