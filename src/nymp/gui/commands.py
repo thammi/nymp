@@ -19,37 +19,38 @@
 ##############################################################################
 
 commands = {
-        # common
-        'activate': ['enter'],
+        # navigation
         'nav_up': ['up', 'k'],
         'nav_page_up': ['page up'],
         'nav_down': ['down', 'j'],
         'nav_page_down': ['page down'],
         'nav_top': ['home'],
         'nav_bottom': ['end'],
-        'yank': ['y'],
-        # global
         'col_swap': ['tab'],
         'col_left': ['h'],
         'col_right': ['l'],
+        # playlist manipulation
+        'yank': ['y'],
+        'paste': ['p'],
+        'delete': ['d'],
         'clear': ['C'],
+        'mark': [' '],
+        'reset_mark': ['meta  '],
+        'move_up': ['K'],
+        'move_down': ['J'],
+        # playback
         'play': ['x'],
         'stop': ['c'],
-        'next': ['n'],
-        'prev': ['b'],
-        'quit': ['q'],
+        'next': ['v'],
+        'prev': ['z'],
         'vol_down': ['9'],
         'vol_up': ['0'],
         # browser
         'add': ['a'],
         'expand': ['right'],
         'fold': ['left'],
-        # playlist
-        'delete': ['d'],
-        'mark': [' '],
-        'reset_mark': ['meta  '],
-        'move_up': ['K'],
-        'move_down': ['J'],
-        'paste': ['p'],
+        # global
+        'quit': ['q'],
+        'activate': ['enter'],
         }
 
