@@ -244,6 +244,27 @@ class CurPlaylistWalker(urwid.ListWalker):
         else:
             logging.error("Invalid buffer content")
 
+    def yank_entry(self):
+        if self.playlist:
+            playlist = self.playlist
+            selected = self.selected
+
+            if selected:
+                # remove all selected
+                selected.sort()
+
+                selected_ids = [playlist[i].media_id for i in selected]
+                put_buffer(selected_ids)
+
+                self.clear_select()
+
+                logging.info("Yanked %i items to the buffer" % len(selected))
+            else:
+                # remove item in focus
+                focus = self._focus
+                put_buffer([playlist[focus].media_id])
+                logging.info("Yanked focused item to the buffer")
+
     def delete_entry(self):
         if self.playlist:
             playlist = self.playlist
@@ -370,6 +391,7 @@ class Playlist(ScrollableList):
                 'move_up': self.walker.move_up,
                 'move_down': self.walker.move_down,
                 'paste': self.walker.insert_buffer,
+                'yank': self.walker.yank_entry,
             }
 
         if command in commands:
