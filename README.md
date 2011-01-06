@@ -28,11 +28,15 @@ vim-oriented. Configuration and a command line will be implemented later.
 
 Incomplete overview:
 
-* p - play/pause
-* d - delete from playlist
-* j/k - navigate
-* h/l/tab - change column (library/playlist)
+* x - play/pause
+* c - stop
+* z/v - previous/next
+* d - delete from playlist (and put into buffer)
 * a - append to playlist
+* p - paste from buffer
+* y - save to buffer
+* j/k/arrow keys - navigate
+* h/l/tab - change column (library/playlist)
 * enter - collapse tree node/jump to playlist item
 * space - mark/unmark item
 * alt+space - unmark all
