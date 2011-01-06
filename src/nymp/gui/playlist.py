@@ -237,9 +237,12 @@ class CurPlaylistWalker(urwid.ListWalker):
             for media_id in reversed(buf):
                 playlist.insert_id(focus + delta, media_id)
             logging.info("Pasted %i items from the buffer" % len(buf))
-        else:
-            self.xc.playlist.insert_collection(focus + delta, buf)
+        elif isinstance(buf, tuple):
+            collection, order = buf
+            self.xc.playlist.insert_collection(focus + delta, collection, order)
             logging.info("Pasted a collection from the buffer")
+        else:
+            logging.error("Invalid buffer content")
 
     def delete_entry(self):
         if self.playlist:

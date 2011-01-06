@@ -20,12 +20,15 @@
 
 import urwid
 
+import logging
+
 import xmmsclient.collections as coll
 
 from nymp.events import EventEmitter
 
 from nymp.gui.loop import update
 from nymp.gui.widgets import SelectableText, ScrollableList
+from nymp.gui.buffer import put_buffer
 
 def _node_cmp_key(item):
     """Calculate the key used to sort nodes, ignores case"""
@@ -84,8 +87,13 @@ class CollectionTree(EventEmitter):
     def add_to_playlist(self):
         # flatten the steps
         order = sum((step['sort'] for step in self.steps), [])
-
         self.xc.playlist.add_collection(self.collection, order)
+        logging.info("Added a collection to the playlist")
+
+    def save_to_buffer(self):
+        order = sum((step['sort'] for step in self.steps), [])
+        put_buffer((self.collection, order))
+        logging.info("Yanked collection to buffer")
 
     def toggle_exp(self):
         if self.expanded:
@@ -357,6 +365,7 @@ class BrowserWidget(ScrollableList):
                 'expand': self.walker.focus_node().expand,
                 'fold': deep_fold,
                 'add': self.walker.focus_node().add_to_playlist,
+                'yank': self.walker.focus_node().save_to_buffer,
             }
 
         if command in commands:
