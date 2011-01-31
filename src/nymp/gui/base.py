@@ -158,6 +158,7 @@ class BaseWidget(urwid.Frame):
 
             commands = {
                     'play': xc.player.toggle,
+                    'stop': xc.player.stop,
                     'next': xc.player.next,
                     'prev': xc.player.prev,
                     'col_swap': self.focus_swap,
