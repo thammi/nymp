@@ -79,4 +79,5 @@ You can use the mouse, too.
   - auto completion
 - playlists
 - playback status
+- seek
 

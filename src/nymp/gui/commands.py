@@ -54,3 +54,7 @@ commands = {
         'activate': ['enter'],
         }
 
+def parse_command(cmd_str):
+    parts = cmd_str.split()
+    return (parts[0], parts[1:])
+

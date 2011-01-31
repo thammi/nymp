@@ -28,7 +28,7 @@ from nymp.gui.browser import BrowserWidget
 from nymp.gui.playlist import Playlist
 from nymp.gui.status import StatusBar
 
-from nymp.gui.commands import commands
+from nymp.gui.commands import commands, parse_command
 
 class MiddleColumns(urwid.Columns):
 
@@ -134,9 +134,9 @@ class BaseWidget(urwid.Frame):
             hotkeys = self.hotkeys
 
             if inp in hotkeys:
-                command = hotkeys[inp]
+                command, args = parse_command(hotkeys[inp])
 
-                if not self.command(size, command, []):
+                if not self.command(size, command, args):
                     logging.info("The command '%s' did not apply" % command)
             else:
                 logging.info("No key binding for '%s' found" % inp)
