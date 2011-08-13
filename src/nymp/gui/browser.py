@@ -323,6 +323,9 @@ class BrowserWidget(ScrollableList):
         # TODO: doesn't work with reconnects
         self.coll_tree.request()
 
+    def widget_id(self):
+        return "browser"
+
     def mouse_event(self, size, event, button, col, row, focus):
         if event == 'mouse press' and button == 3 or button == 11:
             actions = {

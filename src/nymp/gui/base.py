@@ -94,9 +94,11 @@ class BaseWidget(urwid.Frame):
     def init_commands(self):
         self.hotkeys = hotkeys = {}
 
-        for command, bindings in commands.items():
-            for binding in bindings:
-                hotkeys[binding] = command
+        for part, mappings in commands.items():
+            hotkeys[part] = part_keys = {}
+            for command, bindings in mappings.items():
+                for binding in bindings:
+                    part_keys[binding] = command
 
     def focus_swap(self):
         split = self.split
@@ -131,7 +133,11 @@ class BaseWidget(urwid.Frame):
 
     def keypress(self, size, inp):
         if urwid.Frame.keypress(self, size, inp):
-            hotkeys = self.hotkeys
+            focus = self.split.get_focus()
+
+            # get all hotkeys
+            hotkeys = dict(self.hotkeys['global'])
+            hotkeys.update(self.hotkeys[focus.widget_id()])
 
             if inp in hotkeys:
                 command, args = parse_command(hotkeys[inp])

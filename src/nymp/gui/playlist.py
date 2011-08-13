@@ -360,6 +360,9 @@ class Playlist(ScrollableList):
         self.walker = walker = CurPlaylistWalker(xc)
         urwid.ListBox.__init__(self, walker)
 
+    def widget_id(self):
+        return 'playlist'
+
     def mouse_event(self, size, event, button, col, row, focus):
         if event == 'mouse press' and (button == 3 or button == 11):
             actions = {
