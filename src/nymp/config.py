@@ -28,9 +28,7 @@ def get_config(name):
 
 def load_defaults(name):
     if name in defaults:
-        config = defaults[name]
-        save_config(name, config)
-        return config
+        return defaults[name]
     else:
         return {}
 
