@@ -29,7 +29,7 @@ from nymp.gui.loop import deferred_call
 
 # TODO: remove logging :D
 import logging
-h = logging.FileHandler('/tmp/log')
+h = logging.FileHandler('/tmp/nymp_log')
 rl = logging.getLogger()
 rl.addHandler(h)
 rl.setLevel(logging.DEBUG)

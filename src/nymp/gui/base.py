@@ -28,7 +28,11 @@ from nymp.gui.browser import BrowserWidget
 from nymp.gui.playlist import Playlist
 from nymp.gui.status import StatusBar
 
-from nymp.gui.commands import commands, parse_command
+from nymp.gui.commands import commands
+
+def parse_command(cmd_str):
+    parts = cmd_str.split()
+    return (parts[0], parts[1:])
 
 class MiddleColumns(urwid.Columns):
 
