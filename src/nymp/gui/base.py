@@ -28,7 +28,7 @@ from nymp.gui.browser import BrowserWidget
 from nymp.gui.playlist import Playlist
 from nymp.gui.status import StatusBar
 
-from nymp.gui.commands import commands
+from nymp.config import get_config
 
 def parse_command(cmd_str):
     parts = cmd_str.split()
@@ -98,7 +98,7 @@ class BaseWidget(urwid.Frame):
     def init_commands(self):
         self.hotkeys = hotkeys = {}
 
-        for part, mappings in commands.items():
+        for part, mappings in get_config('hotkeys').items():
             hotkeys[part] = part_keys = {}
             for command, bindings in mappings.items():
                 for binding in bindings:
