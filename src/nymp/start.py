@@ -23,6 +23,7 @@ import urwid
 import sys
 import os
 
+from nymp.config import get_config
 from nymp.gui import BaseWidget, set_loop
 from nymp.xmms import XmmsConnection
 from nymp.gui.loop import deferred_call
@@ -47,39 +48,13 @@ def palette_adjust(palette):
 
     return palette
 
-normal_palette = palette_adjust({
-        'normal': ('default', 'default'),
-        'focus': ('black', 'light gray'),
-        'current': ('dark green', 'default'),
-        'current_focus': ('default', 'dark gray'),
-        'spacer': ('dark gray', 'default'),
-        'status': ('dark gray', 'default'),
-        'playing': ('dark green', 'default'),
-        'selected': ('yellow', 'default'),
-        'selected_focus': ('yellow', 'dark gray'),
-        'progress': ('default', 'dark gray')
-        })
+# TODO: move this away from module initialization
 
-high_palette = palette_adjust({
-        'normal': ('#FFF', '#000'),
-        'focus': ('#000', '#666'),
-        'current': ('#393', '#000'),
-        'current_focus': ('#FFF', '#666'),
-        'spacer': ('#666', '#000'),
-        'status': ('#666', '#000'),
-        'playing': ('#393', '#000'),
-        'selected': ('#FF0', '#000'),
-        'selected_focus': ('#FF0', '#666'),
-        'progress': ('#000', '#999'),
-        })
+palette_config = get_config('palettes')
 
-mono_palette = {
-        'focus': 'standout',
-        'current': 'bold,underline',
-        'current_focus': 'bold,standout',
-        'selected': 'bold',
-        'selected_focus': 'bold,standout',
-        }
+normal_palette = palette_adjust(palette_config['normal'])
+high_palette = palette_adjust(palette_config['high'])
+mono_palette = palette_config['mono']
 
 # merging palettes into the format urwid wants
 def palette_mixer(normal, mono, high):

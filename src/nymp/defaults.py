@@ -60,6 +60,40 @@ defaults = {
                 'expand': ['right'],
                 'fold': ['left', 'enter'],
                 },
-            }
+            },
+
+        'palettes': {
+            'normal': {
+                'normal': ('default', 'default'),
+                'focus': ('black', 'light gray'),
+                'current': ('dark green', 'default'),
+                'current_focus': ('default', 'dark gray'),
+                'spacer': ('dark gray', 'default'),
+                'status': ('dark gray', 'default'),
+                'playing': ('dark green', 'default'),
+                'selected': ('yellow', 'default'),
+                'selected_focus': ('yellow', 'dark gray'),
+                'progress': ('default', 'dark gray'),
+                },
+            'high': {
+                'normal': ('#FFF', '#000'),
+                'focus': ('#000', '#666'),
+                'current': ('#393', '#000'),
+                'current_focus': ('#FFF', '#666'),
+                'spacer': ('#666', '#000'),
+                'status': ('#666', '#000'),
+                'playing': ('#393', '#000'),
+                'selected': ('#FF0', '#000'),
+                'selected_focus': ('#FF0', '#666'),
+                'progress': ('#000', '#999'),
+                },
+            'mono': {
+                'focus': 'standout',
+                'current': 'bold,underline',
+                'current_focus': 'bold,standout',
+                'selected': 'bold',
+                'selected_focus': 'bold,standout',
+                }
+            },
         }
 
