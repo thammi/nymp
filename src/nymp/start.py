@@ -108,7 +108,7 @@ def palette_mixer(normal, mono, high):
 
         yield tuple(entry)
 
-def main(args):
+def main(args=sys.argv):
     xc = XmmsConnection()
 
     # try to connect
