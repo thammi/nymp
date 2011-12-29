@@ -31,26 +31,35 @@ CONF_DIR = os.path.join(userconfdir_get(), "clients", "nymp")
 
 cache = {}
 
-def get_config(name):
+def load_config(name):
     fn = os.path.join(CONF_DIR, name + ".json")
 
     if os.path.exists(fn): 
         try:
             f = open(fn, 'r')
-            config = json.load(f)
-            f.close()
-
-            return config
+            cache[name] = json.load(f)
         except:
-            return load_defaults(name)
+            logging.exception("Unable to load configuration")
+            cache[name] = None
+        finally:
+            f.close()
     else:
-        return load_defaults(name)
+        cache[name] = None
 
-def load_defaults(name):
+def get_config(name):
+    if name not in cache:
+        load_config(name)
+
+    if name in cache and cache[name] != None:
+        return cache[name]
+    else:
+        return load_default(name)
+
+def load_default(name):
     if name in defaults:
         return defaults[name]
     else:
-        return {}
+        return None
 
 def save_config(name, data):
     fn = os.path.join(CONF_DIR, name + ".json")
