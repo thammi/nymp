@@ -21,9 +21,11 @@
 import urwid
 
 import logging
+import re
 
 from string import Template
 
+from nymp.config import get_config
 from nymp.gui.widgets import SelectableText, ScrollableList
 from nymp.gui.loop import update
 from nymp.gui.buffer import put_buffer, get_buffer
@@ -352,6 +354,94 @@ class CurPlaylistWalker(urwid.ListWalker):
     def move_down(self):
         self.move(1)
 
+    # TODO: searching while requesting async sucks
+    def search(self, text, down, skip, cb):
+        playlist = self.playlist
+
+        start = self._focus
+
+        # nothing to search
+        if start == None:
+            cb(False)
+
+        # which direction?
+        if down:
+            step = lambda a: (a + 1) % len(playlist)
+        else:
+            step = lambda a: (a - 1) % len(playlist)
+
+        # where to start?
+        if skip:
+            cur = step(start)
+        else:
+            cur = start
+
+        flags = re.IGNORECASE
+        needle = re.compile(text, flags)
+
+        self._actual_search(needle, cur, start, step, cb)
+
+    def _actual_search(self, needle, start, end, step, cb):
+        playlist = self.playlist
+        xc = self.xc
+
+        search_fields = get_config('search_fields')
+
+        cur = start
+        first = True
+
+        # TODO: this loop is ugly
+        while True:
+            # the end?
+            if cur == start and not first:
+                # we cycled through
+                cb(False)
+                return
+
+            # not the first anymore?
+            first = False
+
+            # check the playlist item
+            item = playlist[cur]
+            meta = item.meta
+
+            if meta != None:
+                # let's compare
+                for key in search_fields:
+                    if key in meta:
+                        value = meta[key]
+
+                        if isinstance(value, basestring) and needle.search(value):
+                            # found one
+                            self._focus = cur
+                            self.modified()
+
+                            update()
+
+                            cb(True)
+                            return
+            else:
+                # we have to request the meta information
+                def request_cb(meta):
+                    self._actual_search(needle, cur, end, step, cb)
+
+                item.request(xc, request_cb)
+
+                # prefetch next items
+                pre = cur
+                for i in range(self.PRE_CACHING):
+                    pre = step(pre)
+
+                    if pre != None:
+                        playlist[pre].request(xc, None)
+                    else:
+                        break
+
+                # the callback of the request will continue our work
+                return
+
+            cur = step(cur)
+
 class Playlist(ScrollableList):
 
     def __init__(self, xc):
@@ -410,4 +500,7 @@ class Playlist(ScrollableList):
     def move_bottom(self, size):
         # moving down without iterating
         self.change_focus(size, len(self.walker.playlist)-1)
+
+    def search(self, text, down, skip, cb):
+        self.walker.search(text, down, skip, cb)
 
