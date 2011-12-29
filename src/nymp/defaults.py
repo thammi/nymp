@@ -19,6 +19,8 @@
 ##############################################################################
 
 defaults = {
+        'search_fields': ['title', 'album', 'artist'],
+
         'hotkeys': {
             'global': {
                 # navigation
@@ -31,6 +33,11 @@ defaults = {
                 'col_swap': ['tab'],
                 'col_left': ['h'],
                 'col_right': ['l'],
+                # search
+                'search_up': ['?'],
+                'search_down': ['/'],
+                'search_on_up': ['N'],
+                'search_on_down': ['n'],
                 # playback
                 'play': ['x'],
                 'stop': ['c'],
@@ -41,6 +48,7 @@ defaults = {
                 'clear': ['C'],
                 # global
                 'quit': ['q'],
+                'command': [':'],
                 },
             'playlist': {
                 # playlist manipulation
