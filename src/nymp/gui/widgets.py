@@ -205,3 +205,25 @@ class TextProgress(urwid.FlowWidget):
 
         return canvas
 
+class Prompt(urwid.Edit):
+
+    def __init__(self, prompt, cb, instant=None):
+        urwid.Edit.__init__(self, prompt)
+
+        self.cb = cb
+        self.instant = instant
+
+    def keypress(self, size, key):
+        overwrite = {
+                'escape': lambda: self.cb(None),
+                'enter': lambda: self.cb(self.get_edit_text()),
+                }
+
+        if key in overwrite:
+            overwrite[key]()
+        else:
+            urwid.Edit.keypress(self, size, key)
+
+            if self.instant:
+                self.instant(self.get_edit_text())
+
