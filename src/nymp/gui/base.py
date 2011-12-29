@@ -35,6 +35,14 @@ def parse_command(cmd_str):
     parts = cmd_str.split()
     return (parts[0], parts[1:])
 
+def patch_focus(widget):
+    orig_render = widget.render
+
+    def render_patch(size, focus=False):
+        return orig_render(size, True)
+
+    widget.render = render_patch
+
 class MiddleColumns(urwid.Columns):
 
     def keypress(self, size, key):
@@ -65,7 +73,6 @@ class MiddleColumns(urwid.Columns):
 
         urwid.Columns.mouse_event(self, size, event, button, col, row, focus)
 
-
 class BaseWidget(urwid.Frame):
 
     def __init__(self, xc):
@@ -92,6 +99,8 @@ class BaseWidget(urwid.Frame):
 
         widgets = [('weight', 0.6, browser), ('fixed', 1, hor_space), playlist]
         self.split = split = MiddleColumns(widgets, focus_column=2, dividechars=1)
+
+        patch_focus(split)
 
         urwid.Frame.__init__(self, split, current_pile, status)
 
@@ -175,6 +184,7 @@ class BaseWidget(urwid.Frame):
                 self.last_search = text
 
         def update(text):
+            # TODO: race condition against other update()s und finish()
             focus.search(text, down, False, search_cb)
 
         prompt = Prompt('/' if down else '?', finish, update)
