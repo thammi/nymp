@@ -215,7 +215,7 @@ class Prompt(urwid.Edit):
 
     def keypress(self, size, key):
         overwrite = {
-                'escape': lambda: self.cb(None),
+                'esc': lambda: self.cb(None),
                 'enter': lambda: self.cb(self.get_edit_text()),
                 }
 
