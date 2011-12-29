@@ -50,6 +50,12 @@ def update():
     loop.set_alarm_in(0, redraw)
 
 def deferred_call(wait, cb, *args):
+    def cb_wrap(l, a):
+        try:
+            cb(*args)
+        except:
+            logging.exception("Exception in deferred call")
+
     loop = get_loop()
-    loop.set_alarm_in(wait, lambda l, a: cb(*args))
+    loop.set_alarm_in(wait, cb_wrap)
 
