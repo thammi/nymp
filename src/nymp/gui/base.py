@@ -190,9 +190,7 @@ class BaseWidget(urwid.Frame):
 
         def cb(found):
             if not found:
-                logging.info('no more matches')
-
-        logging.info("search on")
+                logging.info('No more matches')
 
         text = self.last_search
 
