@@ -27,6 +27,7 @@ from nymp.gui.current import CurrentWidget
 from nymp.gui.browser import BrowserWidget
 from nymp.gui.playlist import Playlist
 from nymp.gui.status import StatusBar
+from nymp.gui.widgets import Prompt
 
 from nymp.config import get_config
 
@@ -70,13 +71,14 @@ class BaseWidget(urwid.Frame):
     def __init__(self, xc):
         self.xc = xc
         self.last_click = {}
+        self.last_search = None
 
         # spacer
         hor_space = urwid.AttrMap(urwid.SolidFill(u'\u2502'), 'spacer')
         vert_space = urwid.AttrMap(urwid.Divider(u'\u2500'), 'spacer')
 
         # program status
-        status = urwid.AttrMap(StatusBar(), 'status')
+        self.status = status = urwid.AttrMap(StatusBar(), 'status')
 
         # current media status
         current = CurrentWidget(xc)
@@ -147,9 +149,57 @@ class BaseWidget(urwid.Frame):
                 command, args = parse_command(hotkeys[inp])
 
                 if not self.command(size, command, args):
-                    logging.info("The command '%s' did not apply" % command)
+                    logging.error("The command '%s' did not apply" % command)
             else:
                 logging.info("No key binding for '%s' found" % inp)
+
+    def search(self, down):
+        split = self.split
+        focus = split.get_focus()
+
+        if not hasattr(focus, 'search'):
+            logging.error("The selected widget does not support searching")
+            return
+
+        def search_cb(found):
+            if not found:
+                logging.info("Search pattern not found")
+
+        def finish(text):
+            self.set_footer(self.status)
+            self.set_focus('body')
+
+            focus.search(text, down, False, search_cb)
+
+            self.last_search = text
+
+        def update(text):
+            focus.search(text, down, False, search_cb)
+
+        prompt = Prompt('/' if down else '?', finish, update)
+        self.set_footer(prompt)
+        self.set_focus('footer')
+
+    def search_on(self, down):
+        split = self.split
+        focus = split.get_focus()
+
+        if not hasattr(focus, 'search'):
+            logging.error("The selected widget does not support searching")
+            return
+
+        def cb(found):
+            if not found:
+                logging.info('no more matches')
+
+        logging.info("search on")
+
+        text = self.last_search
+
+        if text:
+            focus.search(text, down, True, cb)
+        else:
+            logging.info("There is no search to continue")
 
     def command(self, size, command, args):
             xc = self.xc
@@ -178,6 +228,10 @@ class BaseWidget(urwid.Frame):
                     'quit': sys.exit,
                     'vol_up': lambda: rel_volume(2),
                     'vol_down': lambda: rel_volume(-2),
+                    'search_up': lambda: self.search(False),
+                    'search_down': lambda: self.search(True),
+                    'search_on_up': lambda: self.search_on(False),
+                    'search_on_down': lambda: self.search_on(True),
                     }
 
             if command in commands:
