@@ -52,7 +52,9 @@ class PlaylistItem:
 
     def _info_cb(self, meta, cb):
         self.meta = meta
-        cb(meta)
+
+        if cb:
+            cb(meta)
 
 class CurPlaylistWalker(urwid.ListWalker):
 
