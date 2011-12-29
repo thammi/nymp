@@ -169,9 +169,10 @@ class BaseWidget(urwid.Frame):
             self.set_footer(self.status)
             self.set_focus('body')
 
-            focus.search(text, down, False, search_cb)
+            if text:
+                focus.search(text, down, False, search_cb)
 
-            self.last_search = text
+                self.last_search = text
 
         def update(text):
             focus.search(text, down, False, search_cb)
