@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name = "nymp",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Thammi",
     author_email = "thammi@chaossource.net",
     description = ("A graphical xmms2 cli frontend. It is library focused and provides a tree view on your collection"),
@@ -23,6 +23,7 @@ setup(
     package_dir={'': 'src'},
     long_description=read('README.md'),
     classifiers=[
+        "Programming Language :: Python :: 2",
         "Development Status :: 4 - Beta",
         "Topic :: Multimedia :: Sound/Audio",
         "License :: OSI Approved :: GNU General Public License (GPL)",
